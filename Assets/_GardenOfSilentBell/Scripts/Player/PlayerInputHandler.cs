@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerInputHandler : MonoBehaviour
 {
     public Vector2 MovementInput { get; private set; }
@@ -12,29 +13,42 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
+        // Hook into events from InputAction
+        playerInput.actions["Move"].performed += OnMove;
+        playerInput.actions["Move"].canceled += OnMove;
+
+        playerInput.actions["Jump"].performed += OnJump;
+        playerInput.actions["Interact"].performed += OnInteract;
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    private void OnDestroy()
     {
-        MovementInput = context.ReadValue<Vector2>();
-        //Debug.Log("Received Move Input: " + MovementInput);
-
+        // Always clean up subscriptions
+        playerInput.actions["Move"].performed -= OnMove;
+        playerInput.actions["Move"].canceled -= OnMove;
+        playerInput.actions["Jump"].performed -= OnJump;
+        playerInput.actions["Interact"].performed -= OnInteract;
     }
 
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        JumpPressed = context.performed;
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        InteractPressed = context.performed;
-    }
-
-    private void LateUpdate()
+    private void Update()
     {
         JumpPressed = false;
         InteractPressed = false;
     }
-}
 
+    private void OnMove(InputAction.CallbackContext context)
+    {
+        MovementInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        JumpPressed = true;
+    }
+
+    private void OnInteract(InputAction.CallbackContext context)
+    {
+        InteractPressed = true;
+    }
+}

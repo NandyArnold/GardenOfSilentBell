@@ -16,25 +16,34 @@ public class MovementHandler : MonoBehaviour
     private bool isGrounded;
     private PlayerInputHandler inputHandler;
     private SpriteFlipper spriteFlipper;
+    private InteractionHandler interactionHandler;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteFlipper = GetComponent<SpriteFlipper>();
         inputHandler = GetComponent<PlayerInputHandler>();
+        interactionHandler = GetComponent<InteractionHandler>();
         if (spriteFlipper == null)
         {
             Debug.LogError("spriteFlipper is null!");
         }
     }
 
+    //private void Update()
+    //{
+    //    if (inputHandler.InteractPressed)
+    //    {
+    //        interactionHandler.TryInteract();
+    //    }
+    //}
     void FixedUpdate()
     {
         float move = inputHandler.MovementInput.x;
         rb.linearVelocity = new Vector2(move * moveSpeed, rb.linearVelocity.y);
 
         spriteFlipper?.Flip(move);
-        Debug.Log($"FixedUpdate move input: {move}");
+        //Debug.Log($"FixedUpdate move input: {move}");
     }
 
     public void ProcessMove(Vector2 input)
@@ -65,7 +74,7 @@ public class MovementHandler : MonoBehaviour
         if (IsGroundLayer(collision.gameObject))
         {
             isGrounded = true;
-            Debug.Log("Touched ground");
+            //Debug.Log("Touched ground");
         }
     }
 

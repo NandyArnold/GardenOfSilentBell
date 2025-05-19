@@ -8,6 +8,8 @@ public class SpriteFlipper : MonoBehaviour
     private int baseDirectionMultiplier; // +1 or -1
     private int currentFacing = 1;
 
+    public bool disableFlip = false;
+
     void Awake()
     {
         baseDirectionMultiplier = defaultFacing == Facing.Right ? 1 : -1;
@@ -15,7 +17,8 @@ public class SpriteFlipper : MonoBehaviour
 
     public void Flip(float moveDirection)
     {
-        Debug.Log($"Flip called with moveDirection: {moveDirection}");
+        //Debug.Log($"Flip called with moveDirection: {moveDirection}");
+        if (disableFlip) return;
         if (Mathf.Abs(moveDirection) < 0.01f) return;
 
         int desiredFacing = moveDirection > 0 ? 1 : -1;
