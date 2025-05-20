@@ -6,10 +6,18 @@ public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance { get; private set; }
 
-    [SerializeField] private List<PlayerController> allCharacters;
-    private int currentIndex = 0;
+    [System.Serializable]
+    public class CharacterEntry
+    {
+        public GameObject character;
+        public bool isUnlocked;
+    }
 
-    public PlayerController ActiveCharacter => allCharacters[currentIndex];
+    [SerializeField] private List<CharacterEntry> characters = new List<CharacterEntry>();
+
+    private int activeCharacterIndex = 0;
+
+    public GameObject ActiveCharacter => characters[activeCharacterIndex].character;
 
     private void Awake()
     {
@@ -20,35 +28,46 @@ public class CharacterManager : MonoBehaviour
         }
         Instance = this;
 
-        SetActiveCharacter(0); // Start with first unlocked
+        // Activate the first unlocked character
+        for (int i = 0; i < characters.Count; i++)
+        {
+            if (characters[i].isUnlocked)
+            {
+                SetActiveCharacter(i);
+                break;
+            }
+        }
     }
 
     public void SwitchCharacter()
     {
-        int startIndex = currentIndex;
-        int nextIndex = (currentIndex + 1) % allCharacters.Count;
+        if (characters.Count == 0) return;
 
-        while (nextIndex != startIndex)
+        int startIndex = activeCharacterIndex;
+        int attempts = 0;
+
+        do
         {
-            if (allCharacters[nextIndex].isUnlocked)
+            activeCharacterIndex = (activeCharacterIndex + 1) % characters.Count;
+            attempts++;
+
+            if (characters[activeCharacterIndex].isUnlocked)
             {
-                SetActiveCharacter(nextIndex);
+                SetActiveCharacter(activeCharacterIndex);
                 return;
             }
-            nextIndex = (nextIndex + 1) % allCharacters.Count;
-        }
 
-        // Fallback to original
-        if (allCharacters[startIndex].isUnlocked)
-            SetActiveCharacter(startIndex);
+        } while (attempts < characters.Count && activeCharacterIndex != startIndex);
+
+        Debug.LogWarning("No unlocked characters to switch to.");
     }
 
     public void SetActiveCharacter(int index)
     {
-        if (index < 0 || index >= allCharacters.Count) return;
+        if (index < 0 || index >= characters.Count) return;
 
-        // Deactivate old character
-        var oldChar = allCharacters[currentIndex];
+        // Disable old character input
+        var oldChar = characters[activeCharacterIndex].character;
         var oldInput = oldChar.GetComponent<PlayerInput>();
         if (oldInput != null)
         {
@@ -56,29 +75,29 @@ public class CharacterManager : MonoBehaviour
             oldInput.enabled = false;
         }
 
+        var oldHandler = oldChar.GetComponent<PlayerInputHandler>();
+        if (oldHandler != null)
+            oldHandler.isActivePlayer = false;
+
         // Activate new character
-        currentIndex = index;
-        var newChar = allCharacters[currentIndex];
+        activeCharacterIndex = index;
+        var newChar = characters[activeCharacterIndex].character;
+
         var newInput = newChar.GetComponent<PlayerInput>();
         if (newInput != null)
         {
             newInput.enabled = true;
-
-            var newInputHandler = newChar.GetComponent<PlayerInputHandler>();
-            if (newInputHandler != null)
-                newInputHandler.isActivePlayer = true;
-
-            var oldInputHandler = oldChar.GetComponent<PlayerInputHandler>();
-            if (oldInputHandler != null)
-                oldInputHandler.isActivePlayer = false;
-
-            // Transfer control scheme + devices
-            var oldDevices = PlayerInput.all[0].devices; // assume only 1 player total
             newInput.ActivateInput();
-            newInput.SwitchCurrentControlScheme(oldDevices.ToArray());
+
+            // Optional: transfer device from oldInput if needed
+            // newInput.SwitchCurrentControlScheme(oldInput.devices.ToArray());
         }
 
-        // Update camera follow
+        var newHandler = newChar.GetComponent<PlayerInputHandler>();
+        if (newHandler != null)
+            newHandler.isActivePlayer = true;
+
+        // Update camera
         if (CameraFollow.Instance != null)
         {
             CameraFollow.Instance.SetTarget(newChar.transform);
@@ -86,5 +105,4 @@ public class CharacterManager : MonoBehaviour
 
         Debug.Log($"[CharacterManager] Active character set to: {newChar.name}");
     }
-
 }

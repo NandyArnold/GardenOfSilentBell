@@ -43,6 +43,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     }
 
+    void OnEnable()
+    {
+        if (playerInput == null) playerInput = GetComponent<PlayerInput>();
+        playerInput.ActivateInput(); // force rebind if needed
+    }
     private void OnDestroy()
     {
         // Always clean up subscriptions
