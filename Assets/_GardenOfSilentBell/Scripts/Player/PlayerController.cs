@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        movement.ProcessMove(input.MovementInput);
+        movement.ProcessMove(input.MovementInput, interaction.IsPushing);
 
         if (spriteFlipper != null && interaction != null)
         {
@@ -24,10 +24,16 @@ public class PlayerController : MonoBehaviour
             spriteFlipper.disableFlip = interaction.IsPushing;
         }
 
-        if (input.JumpPressed)
+        if (!interaction.IsPushing && input.JumpPressed)
             movement.Jump();
 
         if (input.InteractPressed)
             interaction.TryInteract();
+
+        if (interaction.IsPushing && interaction.CurrentPushTarget != null)
+        {
+            Debug.Log($"[PlayerController] IsPushing: {interaction.IsPushing}");
+            interaction.CurrentPushTarget.Push(input.MovementInput, movement.moveSpeed);
+        }
     }
 }

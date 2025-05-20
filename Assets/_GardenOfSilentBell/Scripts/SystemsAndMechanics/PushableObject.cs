@@ -1,41 +1,36 @@
 using UnityEngine;
 
-public class PushableObject : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class PushableObject : MonoBehaviour, IInteractable
 {
     private Rigidbody2D rb;
+    public bool IsBeingPushed { get; private set; }
 
-    void Awake()
+    public float pushSpeed = 2f;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
+
+    public void Interact()
+    {
+        Debug.Log("Pushable marked to be pushed. Actual logic handled by player.");
+        // Nothing to do here, just a marker
+    }
+
     public void SetBeingPushed(bool isPushed)
     {
-        if (isPushed)
+        IsBeingPushed = isPushed;
+
+        if (!isPushed)
         {
             rb.linearVelocity = Vector2.zero;
-            rb.bodyType = RigidbodyType2D.Kinematic;
-        }
-        else
-        {
-            transform.SetParent(null);
-            rb.bodyType = RigidbodyType2D.Dynamic;
         }
     }
 
-
-
-    //void Update()
-    //{
-    //    if (transform.parent != null)
-    //    {
-    //        // When attached, override physics
-    //        rb.linearVelocity = Vector2.zero;
-    //        rb.bodyType = RigidbodyType2D.Kinematic;
-    //    }
-    //    else
-    //    {
-    //        // Restore physics
-    //        rb.bodyType = RigidbodyType2D.Dynamic;
-    //    }
-    //}
+    public void Push(Vector2 direction, float speed)
+    {
+        rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
+    }
 }

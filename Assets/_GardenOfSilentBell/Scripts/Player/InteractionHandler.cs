@@ -6,53 +6,46 @@ public class InteractionHandler : MonoBehaviour
     public LayerMask interactableLayer;
 
     public bool IsPushing { get; private set; }
-    private Transform heldObject;
-    public Transform pushAnchor;
+    
+    private PushableObject currentPushTarget;
+    public PushableObject CurrentPushTarget => currentPushTarget;
 
     public void TryInteract()
     {
         Collider2D hit = Physics2D.OverlapCircle(transform.position, interactionRange, interactableLayer);
-        if (hit != null)
-        {
-            Debug.Log($"Interactable found: {hit.name}, by {gameObject.name}");
-            if (hit.TryGetComponent(out IInteractable interactable))
-            {
-                interactable.Interact();
-            }
-            else if (hit.TryGetComponent(out PushableObject pushable))
-            {
-                TryPushPull(pushable.transform); // Pass transform directly
-            }
-        }
-        else
+        if (hit == null)
         {
             Debug.Log("No interactable in range.");
+            return;
+        }
+
+        Debug.Log($"Interactable found: {hit.name}, by {gameObject.name}");
+
+        // Prioritize pushable objects
+        if (hit.TryGetComponent(out PushableObject pushable))
+        {
+            TryPushPull(pushable);
+        }
+        else if (hit.TryGetComponent(out IInteractable interactable))
+        {
+            interactable.Interact();
         }
     }
 
-    public void HandleInputInteraction()
-    {
-        TryInteract();
-    }
-
-
-    public void TryPushPull(Transform objectToPush = null)
+    public void TryPushPull(PushableObject target)
     {
         if (IsPushing)
         {
-            if (heldObject != null)
-                heldObject.SetParent(null);
-
-            heldObject = null;
+            // Stop pushing
+            currentPushTarget = null;
             IsPushing = false;
+            Debug.Log("Stopped pushing");
         }
-        else if (objectToPush != null)
+        else
         {
-            heldObject = objectToPush;
-            heldObject.SetParent(pushAnchor);
-            heldObject.localPosition = Vector3.zero;
+            currentPushTarget = target;
             IsPushing = true;
+            Debug.Log("Started pushing: " + target.name);
         }
     }
-
 }

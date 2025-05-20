@@ -12,6 +12,9 @@ public class MovementHandler : MonoBehaviour
     [Header("Ground Detection")]
     public LayerMask groundLayer;
 
+    [Header("Pushing")]
+    public float pushMoveSpeed = 2.5f;
+
     private Rigidbody2D rb;
     private bool isGrounded;
     private PlayerInputHandler inputHandler;
@@ -46,9 +49,14 @@ public class MovementHandler : MonoBehaviour
         //Debug.Log($"FixedUpdate move input: {move}");
     }
 
-    public void ProcessMove(Vector2 input)
+
+    public void ProcessMove(Vector2 input, bool isPushing = false)
     {
-        float targetSpeed = input.x * moveSpeed;
+        Debug.Log($"[MovementHandler] moveSpeed: {moveSpeed}, pushMoveSpeed: {pushMoveSpeed}");
+        float speed = isPushing ? pushMoveSpeed : moveSpeed;
+        Debug.Log($"[MovementHandler] isPushing: {isPushing}, Using speed: {speed}");
+
+        float targetSpeed = input.x * speed;
         rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
     }
 

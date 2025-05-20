@@ -31,7 +31,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Interact"].performed -= OnInteract;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         JumpPressed = false;
         InteractPressed = false;
