@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
     private InteractionHandler interaction;
     private PlayerInputHandler input;
     private SpriteFlipper spriteFlipper;
+
+    [Header("Character State")]
+    public bool isUnlocked = true;
     private void Awake()
     {
         movement = GetComponent<MovementHandler>();
