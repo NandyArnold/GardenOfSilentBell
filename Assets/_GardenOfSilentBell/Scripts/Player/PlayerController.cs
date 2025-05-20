@@ -16,8 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        movement.ProcessMove(input.MovementInput, interaction.IsPushing);
-
+        // Handle input, interaction, and sprite flipping (non-physics)
         if (spriteFlipper != null && interaction != null)
         {
             // Disable flipping if pushing
@@ -29,11 +28,42 @@ public class PlayerController : MonoBehaviour
 
         if (input.InteractPressed)
             interaction.TryInteract();
+    }
+
+    private void FixedUpdate()
+    {
+        // Handle movement and pushing (physics)
+        movement.ProcessMove(input.MovementInput, interaction.IsPushing, input.SprintPressed);
 
         if (interaction.IsPushing && interaction.CurrentPushTarget != null)
         {
-            Debug.Log($"[PlayerController] IsPushing: {interaction.IsPushing}");
-            interaction.CurrentPushTarget.Push(input.MovementInput, movement.moveSpeed);
+            interaction.CurrentPushTarget.SetBeingPushed(true);
+            interaction.CurrentPushTarget.Push(input.MovementInput, movement.pushMoveSpeed);
         }
+
+
     }
+
+    //private void Update()
+    //{
+    //    movement.ProcessMove(input.MovementInput, interaction.IsPushing);
+
+    //    if (spriteFlipper != null && interaction != null)
+    //    {
+    //        // Disable flipping if pushing
+    //        spriteFlipper.disableFlip = interaction.IsPushing;
+    //    }
+
+    //    if (!interaction.IsPushing && input.JumpPressed)
+    //        movement.Jump();
+
+    //    if (input.InteractPressed)
+    //        interaction.TryInteract();
+
+    //    if (interaction.IsPushing && interaction.CurrentPushTarget != null)
+    //    {
+    //        Debug.Log($"[PlayerController] IsPushing: {interaction.IsPushing}");
+    //        interaction.CurrentPushTarget.Push(input.MovementInput, movement.pushMoveSpeed);
+    //    }
+    //}
 }

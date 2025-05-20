@@ -7,6 +7,7 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 MovementInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool InteractPressed { get; private set; }
+    public bool SprintPressed { get; private set; }
 
     private PlayerInput playerInput;
 
@@ -20,6 +21,9 @@ public class PlayerInputHandler : MonoBehaviour
 
         playerInput.actions["Jump"].performed += OnJump;
         playerInput.actions["Interact"].performed += OnInteract;
+
+        playerInput.actions["Sprint"].performed += OnSprint;
+        playerInput.actions["Sprint"].canceled += OnSprint;
     }
 
     private void OnDestroy()
@@ -50,5 +54,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnInteract(InputAction.CallbackContext context)
     {
         InteractPressed = true;
+    }
+
+    private void OnSprint(InputAction.CallbackContext context)
+    {
+        SprintPressed = true;
     }
 }

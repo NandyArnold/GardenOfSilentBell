@@ -296,9 +296,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &207383159
 BoxCollider2D:
@@ -428,7 +428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbf119ef5662e346a8288447fd573af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pushSpeed: 2
 --- !u!1 &446415470
 GameObject:
   m_ObjectHideFlags: 0
@@ -980,9 +979,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &780326870
 CapsuleCollider2D:
@@ -1148,7 +1147,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
-  pushMoveSpeed: 0.2
+  pushMoveSpeed: 2.5
 --- !u!114 &780326877
 MonoBehaviour:
   m_ObjectHideFlags: 0

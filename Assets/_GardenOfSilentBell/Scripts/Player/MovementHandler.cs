@@ -13,7 +13,11 @@ public class MovementHandler : MonoBehaviour
     public LayerMask groundLayer;
 
     [Header("Pushing")]
-    public float pushMoveSpeed = 2.5f;
+    public float pushMoveSpeed;
+    //private float pushForce = 5f;
+
+    [Header("Sprinting")]
+    public float sprintSpeed = 8f;
 
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -40,25 +44,46 @@ public class MovementHandler : MonoBehaviour
     //        interactionHandler.TryInteract();
     //    }
     //}
-    void FixedUpdate()
+    //void FixedUpdate()
+    //{
+    //    float move = inputHandler.MovementInput.x;
+    //    rb.linearVelocity = new Vector2(move * moveSpeed, rb.linearVelocity.y);
+
+    //    spriteFlipper?.Flip(move);
+    //    //Debug.Log($"FixedUpdate move input: {move}");
+    //}
+
+
+    public void ProcessMove(Vector2 input, bool isPushing = false, bool isSprinting = false)
     {
-        float move = inputHandler.MovementInput.x;
-        rb.linearVelocity = new Vector2(move * moveSpeed, rb.linearVelocity.y);
-
-        spriteFlipper?.Flip(move);
-        //Debug.Log($"FixedUpdate move input: {move}");
-    }
-
-
-    public void ProcessMove(Vector2 input, bool isPushing = false)
-    {
-        Debug.Log($"[MovementHandler] moveSpeed: {moveSpeed}, pushMoveSpeed: {pushMoveSpeed}");
-        float speed = isPushing ? pushMoveSpeed : moveSpeed;
-        Debug.Log($"[MovementHandler] isPushing: {isPushing}, Using speed: {speed}");
+        //Debug.Log($"[MovementHandler] moveSpeed: {moveSpeed}, pushMoveSpeed: {pushMoveSpeed}");
+        float speed = isPushing ? pushMoveSpeed : (isSprinting ? sprintSpeed : moveSpeed);
+        //Debug.Log($"[MovementHandler] isPushing: {isPushing}, Using speed: {speed}");
 
         float targetSpeed = input.x * speed;
         rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        spriteFlipper?.Flip(input.x);
+
+        if (isPushing && interactionHandler.CurrentPushTarget != null)
+        {
+             
+            // Only push if there is horizontal input
+             if (Mathf.Abs(input.x) > 0.01f)
+             {
+                Vector2 pushDirection = new Vector2(input.x, 0f).normalized;
+                // Use the same speed as the player
+                interactionHandler.CurrentPushTarget.Push(new Vector2(input.x, 0f), speed);
+
+                //interactionHandler.CurrentPushTarget.Push(pushDirection, Mathf.Abs(speed));
+             }
+            else
+            {
+             // Stop the pushable object if no input
+             interactionHandler.CurrentPushTarget.Push(Vector2.zero, 0f);
+             }
+        }
     }
+    
 
     public void Jump()
     {
