@@ -85,6 +85,7 @@ public class CharacterManager : MonoBehaviour
             var obj = entry.character;
             var handler = entry.character.GetComponent<PlayerInputHandler>();
             var input = entry.character.GetComponent<PlayerInput>();
+            var sprite = obj.GetComponent<SpriteRenderer>();
 
             if (handler != null)
             {
@@ -100,6 +101,11 @@ public class CharacterManager : MonoBehaviour
             obj.GetComponent<Collider2D>().enabled = true; // optional
             obj.layer = LayerMask.NameToLayer("PlayerInactive");
 
+            if(sprite != null)
+            {
+                sprite.sortingOrder = 9; // optional
+            }
+
             if (input != null)
                 input.enabled = false;
         }
@@ -107,6 +113,7 @@ public class CharacterManager : MonoBehaviour
         var selectedEntry = characters[index];
         var selectedInput = selectedEntry.character.GetComponent<PlayerInput>();
         var selectedHandler = selectedEntry.character.GetComponent<PlayerInputHandler>();
+        var selectedSprite = selectedEntry.character.GetComponent<SpriteRenderer>();
 
         if (selectedInput == null || selectedHandler == null)
         {
@@ -134,6 +141,9 @@ public class CharacterManager : MonoBehaviour
             }
         }
         
+        if (selectedSprite != null)
+            selectedSprite.sortingOrder = 10;
+
         selectedEntry.character.layer = LayerMask.NameToLayer("PlayerActive");
         selectedHandler.enabled = true;
         selectedHandler.isActivePlayer = true;
