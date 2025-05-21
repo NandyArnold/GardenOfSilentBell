@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
+using System.Linq;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -28,7 +30,38 @@ public class CharacterManager : MonoBehaviour
         }
         Instance = this;
 
-        // Activate the first unlocked character
+        //foreach (var entry in characters)
+        //{
+        //    var input = entry.character.GetComponent<PlayerInput>();
+        //    if (input != null)
+        //    {
+        //        input.enabled = false; // Disable until activated
+        //    }
+        //}
+
+        //// Activate the first unlocked character
+        //for (int i = 0; i < characters.Count; i++)
+        //{
+        //    if (characters[i].isUnlocked)
+        //    {
+        //        SetActiveCharacter(i);
+        //        break;
+        //    }
+        //}
+    }
+    private void Start()
+    {
+        foreach (var entry in characters)
+        {
+            var input = entry.character.GetComponent<PlayerInput>();
+            if (input != null)
+            {
+                input.DeactivateInput();
+                input.enabled = false; // truly ensure it's off
+            }
+        }
+
+        // Now initialize only the first active one
         for (int i = 0; i < characters.Count; i++)
         {
             if (characters[i].isUnlocked)
@@ -38,7 +71,6 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-
     public void SwitchCharacter()
     {
         if (characters.Count == 0) return;
@@ -66,43 +98,75 @@ public class CharacterManager : MonoBehaviour
     {
         if (index < 0 || index >= characters.Count) return;
 
-        // Disable old character input
-        var oldChar = characters[activeCharacterIndex].character;
-        var oldInput = oldChar.GetComponent<PlayerInput>();
-        if (oldInput != null)
+        // === CLEAN UP OLD CHARACTER ===
+        if (activeCharacterIndex >= 0)
         {
-            oldInput.DeactivateInput();
-            oldInput.enabled = false;
+            var oldChar = characters[activeCharacterIndex].character;
+            var oldInput = oldChar.GetComponent<PlayerInput>();
+            var oldHandler = oldChar.GetComponent<PlayerInputHandler>();
+
+            if (oldHandler != null)
+                oldHandler.isActivePlayer = false;
+
+            if (oldInput != null)
+            {
+                if (oldInput.user.valid)
+                    oldInput.user.UnpairDevices();
+
+                oldInput.DeactivateInput();
+                oldInput.enabled = false;
+            }
         }
 
-        var oldHandler = oldChar.GetComponent<PlayerInputHandler>();
-        if (oldHandler != null)
-            oldHandler.isActivePlayer = false;
-
-        // Activate new character
+        // === ACTIVATE NEW CHARACTER ===
         activeCharacterIndex = index;
         var newChar = characters[activeCharacterIndex].character;
-
         var newInput = newChar.GetComponent<PlayerInput>();
+        var newHandler = newChar.GetComponent<PlayerInputHandler>();
+
         if (newInput != null)
         {
+            // IMPORTANT: Enable before doing anything
             newInput.enabled = true;
             newInput.ActivateInput();
 
-            // Optional: transfer device from oldInput if needed
-            // newInput.SwitchCurrentControlScheme(oldInput.devices.ToArray());
+            // Clear any previous pairing
+            if (newInput.user.valid)
+                newInput.user.UnpairDevices();
+
+            // Manually create user if needed
+            if (!newInput.user.valid)
+            {
+                var newUser = InputUser.CreateUserWithoutPairedDevices();
+                newUser.AssociateActionsWithUser(newInput.actions);
+                InputUser.PerformPairingWithDevice(Keyboard.current, newUser);
+                InputUser.PerformPairingWithDevice(Mouse.current, newUser);
+            }
+            else
+            {
+                InputUser.PerformPairingWithDevice(Keyboard.current, newInput.user);
+                InputUser.PerformPairingWithDevice(Mouse.current, newInput.user);
+            }
+
+            // Only try to switch control scheme *after* devices are paired and user is valid
+            if (newInput.user.valid && !newInput.user.hasMissingRequiredDevices)
+            {
+                newInput.SwitchCurrentControlScheme("Keyboard&Mouse", Keyboard.current, Mouse.current);
+            }
+            else
+            {
+                Debug.LogWarning($"[CharacterManager] Could not switch control scheme for {newChar.name} — user not valid or missing devices");
+            }
         }
 
-        var newHandler = newChar.GetComponent<PlayerInputHandler>();
         if (newHandler != null)
             newHandler.isActivePlayer = true;
 
-        // Update camera
         if (CameraFollow.Instance != null)
-        {
             CameraFollow.Instance.SetTarget(newChar.transform);
-        }
 
         Debug.Log($"[CharacterManager] Active character set to: {newChar.name}");
     }
+
+
 }

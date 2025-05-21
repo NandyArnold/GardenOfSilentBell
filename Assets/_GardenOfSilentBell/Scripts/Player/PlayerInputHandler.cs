@@ -13,10 +13,20 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool isActivePlayer = true;
 
+    
+
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
+        if (playerInput == null) playerInput = GetComponent<PlayerInput>();
 
+    }
+
+    void OnEnable()
+    {
+        
+
+       
+       
         if (playerInput == null)
         {
             Debug.LogError("PlayerInput is missing from " + gameObject.name);
@@ -40,58 +50,71 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Sprint"].canceled += OnSprint;
 
         playerInput.actions["Switch"].performed += OnSwitch;
+     
 
     }
 
-    void OnEnable()
+    void OnDisable()
     {
-        if (playerInput == null) playerInput = GetComponent<PlayerInput>();
-        playerInput.ActivateInput(); // force rebind if needed
-    }
-    private void OnDestroy()
-    {
-        // Always clean up subscriptions
+        if (playerInput == null || playerInput.actions == null) return;
+
         playerInput.actions["Move"].performed -= OnMove;
         playerInput.actions["Move"].canceled -= OnMove;
         playerInput.actions["Jump"].performed -= OnJump;
         playerInput.actions["Interact"].performed -= OnInteract;
+        playerInput.actions["Sprint"].performed -= OnSprint;
+        playerInput.actions["Sprint"].canceled -= OnSprint;
+        playerInput.actions["Switch"].performed -= OnSwitch;
+    }
+    private void OnDestroy()
+    {
+        
     }
 
     private void LateUpdate()
     {
         JumpPressed = false;
         InteractPressed = false;
+        SprintPressed = false;
     }
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        MovementInput = context.ReadValue<Vector2>();
-        if (!isActivePlayer || !context.performed) return;
+        if (!isActivePlayer) return;
+
+        if (context.canceled)
+        {
+            MovementInput = Vector2.zero;
+        }
+        else
+        {
+            MovementInput = context.ReadValue<Vector2>();
+        }
     }
 
     private void OnJump(InputAction.CallbackContext context)
     {
-        JumpPressed = true;
         if (!isActivePlayer || !context.performed) return;
+        JumpPressed = true;
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        InteractPressed = true;
         if (!isActivePlayer || !context.performed) return;
+        InteractPressed = true;
     }
 
     private void OnSprint(InputAction.CallbackContext context)
     {
-        SprintPressed = true;
         if (!isActivePlayer || !context.performed) return;
+        SprintPressed = true;
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
     {
         Debug.Log($"[PlayerInputHandler] OnSwitch called on {gameObject.name}, isActivePlayer: {isActivePlayer}");
 
-        if (!isActivePlayer || !context.performed) return;
+        if (!playerInput.inputIsActive ||!isActivePlayer || !context.performed) return;
 
         Debug.Log("Trying to switch character");
         CharacterManager.Instance.SwitchCharacter();
