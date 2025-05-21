@@ -32,11 +32,16 @@ public class InteractionHandler : MonoBehaviour
         }
     }
 
+
     public void TryPushPull(PushableObject target)
     {
         if (IsPushing)
         {
-            // Stop pushing
+            if (currentPushTarget != null)
+            {
+                currentPushTarget.SetBeingPushed(false); //  Revert to Kinematic
+            }
+
             currentPushTarget = null;
             IsPushing = false;
             Debug.Log("Stopped pushing");
@@ -45,7 +50,25 @@ public class InteractionHandler : MonoBehaviour
         {
             currentPushTarget = target;
             IsPushing = true;
+            currentPushTarget.SetBeingPushed(true); //  Activate pushing mode
             Debug.Log("Started pushing: " + target.name);
         }
     }
+
+    //public void TryPushPull(PushableObject target)
+    //{
+    //    if (IsPushing)
+    //    {
+    //        // Stop pushing
+    //        currentPushTarget = null;
+    //        IsPushing = false;
+    //        Debug.Log("Stopped pushing");
+    //    }
+    //    else
+    //    {
+    //        currentPushTarget = target;
+    //        IsPushing = true;
+    //        Debug.Log("Started pushing: " + target.name);
+    //    }
+    //}
 }

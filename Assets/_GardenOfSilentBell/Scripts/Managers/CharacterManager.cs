@@ -13,12 +13,15 @@ public class CharacterManager : MonoBehaviour
         public bool isUnlocked;
     }
 
+
     [SerializeField] private List<CharacterEntry> characters = new List<CharacterEntry>();
 
     private int activeCharacterIndex = -1;
 
     public GameObject ActiveCharacter => activeCharacterIndex >= 0 ? characters[activeCharacterIndex].character : null;
 
+    public bool CanSwitch { get; set; } = false;
+    public bool HasMetUp { get; set; } = false;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -149,6 +152,21 @@ public class CharacterManager : MonoBehaviour
         selectedHandler.isActivePlayer = true;
         activeCharacterIndex = index;
 
+        CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
+
         Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }
+
+    public void EnableSwitching()
+    {
+        CanSwitch = true;
+        Debug.Log("Switching now enabled.");
+    }
+
+    public void SetMetUp()
+    {
+        HasMetUp = true;
+        Debug.Log("Characters have met up!");
+    }
+
 }
