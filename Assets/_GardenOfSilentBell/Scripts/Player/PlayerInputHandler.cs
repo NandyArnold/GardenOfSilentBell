@@ -119,4 +119,15 @@ public class PlayerInputHandler : MonoBehaviour
         Debug.Log("Trying to switch character");
         CharacterManager.Instance.SwitchCharacter();
     }
+
+    public void ResetInput()
+    {
+        MovementInput = Vector2.zero;
+        JumpPressed = false;
+        InteractPressed = false;
+        SprintPressed = false;
+    }
+
+
+
 }

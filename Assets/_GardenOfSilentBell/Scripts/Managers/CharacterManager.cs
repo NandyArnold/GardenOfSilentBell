@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Users;
-using System.Linq;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -17,9 +15,9 @@ public class CharacterManager : MonoBehaviour
 
     [SerializeField] private List<CharacterEntry> characters = new List<CharacterEntry>();
 
-    private int activeCharacterIndex = 0;
+    private int activeCharacterIndex = -1;
 
-    public GameObject ActiveCharacter => characters[activeCharacterIndex].character;
+    public GameObject ActiveCharacter => activeCharacterIndex >= 0 ? characters[activeCharacterIndex].character : null;
 
     private void Awake()
     {
@@ -29,26 +27,8 @@ public class CharacterManager : MonoBehaviour
             return;
         }
         Instance = this;
-
-        //foreach (var entry in characters)
-        //{
-        //    var input = entry.character.GetComponent<PlayerInput>();
-        //    if (input != null)
-        //    {
-        //        input.enabled = false; // Disable until activated
-        //    }
-        //}
-
-        //// Activate the first unlocked character
-        //for (int i = 0; i < characters.Count; i++)
-        //{
-        //    if (characters[i].isUnlocked)
-        //    {
-        //        SetActiveCharacter(i);
-        //        break;
-        //    }
-        //}
     }
+
     private void Start()
     {
         foreach (var entry in characters)
@@ -57,11 +37,10 @@ public class CharacterManager : MonoBehaviour
             if (input != null)
             {
                 input.DeactivateInput();
-                input.enabled = false; // truly ensure it's off
+                input.enabled = false;
             }
         }
 
-        // Now initialize only the first active one
         for (int i = 0; i < characters.Count; i++)
         {
             if (characters[i].isUnlocked)
@@ -71,102 +50,91 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
+
     public void SwitchCharacter()
     {
         if (characters.Count == 0) return;
 
-        int startIndex = activeCharacterIndex;
-        int attempts = 0;
+        int originalIndex = activeCharacterIndex;
+        int nextIndex = activeCharacterIndex;
 
         do
         {
-            activeCharacterIndex = (activeCharacterIndex + 1) % characters.Count;
-            attempts++;
-
-            if (characters[activeCharacterIndex].isUnlocked)
+            nextIndex = (nextIndex + 1) % characters.Count;
+            if (characters[nextIndex].isUnlocked)
             {
-                SetActiveCharacter(activeCharacterIndex);
+                SetActiveCharacter(nextIndex);
                 return;
             }
+        } while (nextIndex != originalIndex);
 
-        } while (attempts < characters.Count && activeCharacterIndex != startIndex);
-
-        Debug.LogWarning("No unlocked characters to switch to.");
+        Debug.LogWarning("[CharacterManager] No unlocked characters to switch to.");
     }
 
     public void SetActiveCharacter(int index)
     {
-        if (index < 0 || index >= characters.Count) return;
-
-        // === CLEAN UP OLD CHARACTER ===
-        if (activeCharacterIndex >= 0)
+        if (index < 0 || index >= characters.Count)
         {
-            var oldChar = characters[activeCharacterIndex].character;
-            var oldInput = oldChar.GetComponent<PlayerInput>();
-            var oldHandler = oldChar.GetComponent<PlayerInputHandler>();
+            Debug.LogWarning("[CharacterManager] Invalid character index");
+            return;
+        }
 
-            if (oldHandler != null)
-                oldHandler.isActivePlayer = false;
+        // Deactivate all characters
+        foreach (var entry in characters)
+        {
+            var obj = entry.character;
+            var handler = entry.character.GetComponent<PlayerInputHandler>();
+            var input = entry.character.GetComponent<PlayerInput>();
 
-            if (oldInput != null)
+            if (handler != null)
             {
-                if (oldInput.user.valid)
-                    oldInput.user.UnpairDevices();
-
-                oldInput.DeactivateInput();
-                oldInput.enabled = false;
+                handler.ResetInput();
+                handler.isActivePlayer = false;
+            }
+            if (input != null)
+            {
+                if (input.user.valid)
+                {
+                    input.user.UnpairDevicesAndRemoveUser();
+                    Debug.Log($"[CharacterManager] Unpaired devices from {entry.character.name}");
+                }
+                input.enabled = false;
             }
         }
 
-        // === ACTIVATE NEW CHARACTER ===
+        var selectedEntry = characters[index];
+        var selectedInput = selectedEntry.character.GetComponent<PlayerInput>();
+        var selectedHandler = selectedEntry.character.GetComponent<PlayerInputHandler>();
+
+        if (selectedInput == null || selectedHandler == null)
+        {
+            Debug.LogError("[CharacterManager] Selected character missing PlayerInput or PlayerInputHandler");
+            return;
+        }
+
+        selectedInput.enabled = true;
+
+        if (!selectedInput.user.valid)
+        {
+            Debug.LogWarning($"[CharacterManager] Could not switch control scheme for {selectedEntry.character.name} — user not valid or missing devices");
+        }
+        else
+        {
+            try
+            {
+                selectedInput.user.AssociateActionsWithUser(selectedInput.actions);
+                selectedInput.user.ActivateControlScheme(selectedInput.defaultControlScheme);
+                selectedInput.ActivateInput();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[CharacterManager] Failed to activate control scheme for {selectedEntry.character.name}: {e.Message}");
+            }
+        }
+
+        selectedHandler.isActivePlayer = true;
         activeCharacterIndex = index;
-        var newChar = characters[activeCharacterIndex].character;
-        var newInput = newChar.GetComponent<PlayerInput>();
-        var newHandler = newChar.GetComponent<PlayerInputHandler>();
 
-        if (newInput != null)
-        {
-            // IMPORTANT: Enable before doing anything
-            newInput.enabled = true;
-            newInput.ActivateInput();
-
-            // Clear any previous pairing
-            if (newInput.user.valid)
-                newInput.user.UnpairDevices();
-
-            // Manually create user if needed
-            if (!newInput.user.valid)
-            {
-                var newUser = InputUser.CreateUserWithoutPairedDevices();
-                newUser.AssociateActionsWithUser(newInput.actions);
-                InputUser.PerformPairingWithDevice(Keyboard.current, newUser);
-                InputUser.PerformPairingWithDevice(Mouse.current, newUser);
-            }
-            else
-            {
-                InputUser.PerformPairingWithDevice(Keyboard.current, newInput.user);
-                InputUser.PerformPairingWithDevice(Mouse.current, newInput.user);
-            }
-
-            // Only try to switch control scheme *after* devices are paired and user is valid
-            if (newInput.user.valid && !newInput.user.hasMissingRequiredDevices)
-            {
-                newInput.SwitchCurrentControlScheme("Keyboard&Mouse", Keyboard.current, Mouse.current);
-            }
-            else
-            {
-                Debug.LogWarning($"[CharacterManager] Could not switch control scheme for {newChar.name} — user not valid or missing devices");
-            }
-        }
-
-        if (newHandler != null)
-            newHandler.isActivePlayer = true;
-
-        if (CameraFollow.Instance != null)
-            CameraFollow.Instance.SetTarget(newChar.transform);
-
-        Debug.Log($"[CharacterManager] Active character set to: {newChar.name}");
+        Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }
-
-
 }
