@@ -80,7 +80,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        if (!isActivePlayer) return;
+        if (!isActivePlayer || !enabled) return;
 
         if (context.canceled)
         {
@@ -94,19 +94,19 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext context)
     {
-        if (!isActivePlayer || !context.performed) return;
+        if (!isActivePlayer || !context.performed || !enabled) return;
         JumpPressed = true;
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        if (!isActivePlayer || !context.performed) return;
+        if (!isActivePlayer || !context.performed || !enabled) return;
         InteractPressed = true;
     }
 
     private void OnSprint(InputAction.CallbackContext context)
     {
-        if (!isActivePlayer || !context.performed) return;
+        if (!isActivePlayer || !context.performed || !enabled) return;
         SprintPressed = true;
     }
 

@@ -90,16 +90,18 @@ public class CharacterManager : MonoBehaviour
             {
                 handler.ResetInput();
                 handler.isActivePlayer = false;
+                handler.enabled = false;
             }
-            if (input != null)
+            if (input != null && input.user.valid)
             {
-                if (input.user.valid)
-                {
-                    input.user.UnpairDevicesAndRemoveUser();
-                    Debug.Log($"[CharacterManager] Unpaired devices from {entry.character.name}");
-                }
-                input.enabled = false;
+                input.user.UnpairDevicesAndRemoveUser();
             }
+
+            obj.GetComponent<Collider2D>().enabled = true; // optional
+            obj.layer = LayerMask.NameToLayer("PlayerInactive");
+
+            if (input != null)
+                input.enabled = false;
         }
 
         var selectedEntry = characters[index];
@@ -131,7 +133,9 @@ public class CharacterManager : MonoBehaviour
                 Debug.LogWarning($"[CharacterManager] Failed to activate control scheme for {selectedEntry.character.name}: {e.Message}");
             }
         }
-
+        
+        selectedEntry.character.layer = LayerMask.NameToLayer("PlayerActive");
+        selectedHandler.enabled = true;
         selectedHandler.isActivePlayer = true;
         activeCharacterIndex = index;
 
