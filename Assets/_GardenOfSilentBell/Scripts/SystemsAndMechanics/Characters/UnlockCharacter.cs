@@ -5,10 +5,6 @@ public class UnlockCharacter : MonoBehaviour
     public string characterNameToUnlock;
     public bool switchToUnlockedCharacter = true;
 
-    /// <summary>
-    /// Unlocks the character by name and optionally switches to it.
-    /// </summary>
-    /// <returns>True if the character was successfully unlocked, false otherwise.</returns>
     public bool TryUnlockCharacter()
     {
         var manager = CharacterManager.Instance;
@@ -32,6 +28,8 @@ public class UnlockCharacter : MonoBehaviour
                     {
                         manager.SetActiveCharacter(i);
                     }
+
+                    // **DO NOT trigger follow here**
 
                     return true;
                 }

@@ -10,6 +10,7 @@ public class CharacterManager : MonoBehaviour
     [System.Serializable]
     public class CharacterEntry
     {
+        public string characterName;
         public GameObject character;
         public bool isUnlocked;
     }
@@ -97,7 +98,7 @@ public class CharacterManager : MonoBehaviour
 
             if (handler != null)
             {
-                handler.ResetInput();
+                
                 handler.isActivePlayer = false;
                 handler.enabled = false;
             }
@@ -159,7 +160,8 @@ public class CharacterManager : MonoBehaviour
         activeCharacter = selectedEntry.character;
 
         CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
-        
+        FollowManager.Instance?.AssignFollowTargets();
+
 
         Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }

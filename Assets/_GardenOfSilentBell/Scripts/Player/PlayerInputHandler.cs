@@ -50,7 +50,9 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Sprint"].canceled += OnSprint;
 
         playerInput.actions["Switch"].performed += OnSwitch;
-     
+
+        playerInput.actions["ToggleFollow"].performed += OnToggleFollow;
+
 
     }
 
@@ -65,6 +67,8 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Sprint"].performed -= OnSprint;
         playerInput.actions["Sprint"].canceled -= OnSprint;
         playerInput.actions["Switch"].performed -= OnSwitch;
+        playerInput.actions["ToggleFollow"].performed -= OnToggleFollow;
+
     }
     private void OnDestroy()
     {
@@ -113,7 +117,8 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnToggleFollow(InputAction.CallbackContext context)
     {
         if (!isActivePlayer || !context.performed || !enabled) return;
-        //FollowManager.Instance?.ToggleFollow();
+        Debug.Log("ToggleFollow pressed by " + gameObject.name);
+        FollowManager.Instance?.ToggleFollowAll();
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
@@ -132,6 +137,10 @@ public class PlayerInputHandler : MonoBehaviour
         JumpPressed = false;
         InteractPressed = false;
         SprintPressed = false;
+        if (playerInput != null && playerInput.actions != null)
+        {
+            playerInput.DeactivateInput();
+        }
     }
 
 
