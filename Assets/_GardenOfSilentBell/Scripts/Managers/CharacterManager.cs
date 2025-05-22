@@ -159,7 +159,7 @@ public class CharacterManager : MonoBehaviour
         activeCharacter = selectedEntry.character;
 
         CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
-        FollowManager.Instance?.UpdateFollowTargets(selectedEntry.character.transform);
+        
 
         Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }
@@ -174,15 +174,8 @@ public class CharacterManager : MonoBehaviour
     {
         HasMetUp = true;
         Debug.Log("Characters have met up!");
-        foreach (var entry in characters)
-        {
-            var follow = entry.character.GetComponent<CompanionFollow>();
-            if (follow != null)
-            {
-                follow.SetHasMetUp(true);
-            }
-        }
     }
+       
 
     public CharacterEntry GetCharacterEntry(int index)
     {
@@ -192,50 +185,8 @@ public class CharacterManager : MonoBehaviour
         }
         return null;
     }
-    //public string[] GetAllCharacterNames()
-    //{
-    //    return characters.Select(c => c.characterName).ToArray();
-    //}
-    //public void UnlockCharacter(string characterName, bool autoFollow = true)
-    //{
-    //    foreach (var entry in characters)
-    //    {
-    //        if (entry.character.name == characterName)
-    //        {
-    //            entry.isUnlocked = true;
+   
 
-    //            var follow = entry.character.GetComponent<CompanionFollow>();
-    //            if (follow != null)
-    //            {
-    //                follow.SetHasMetUp(true);
-    //            }
 
-    //            Debug.Log($"[CharacterManager] {characterName} unlocked.");
-    //            return;
-    //        }
-    //    }
-
-    //    Debug.LogWarning($"[CharacterManager] Character {characterName} not found.");
-    //}
-
-    //public void ToggleFollowForAll()
-    //{
-    //    foreach (var entry in characters)
-    //    {
-    //        if (!entry.isUnlocked || entry.character == activeCharacter) continue;
-
-    //        var follow = entry.character.GetComponent<CompanionFollow>();
-    //        if (follow != null && follow.hasMetUp)
-    //        {
-    //            if (follow.IsFollowing())
-    //                follow.StopFollowing();
-    //            else
-    //            {
-    //                follow.targetToFollow = activeCharacter.transform;
-    //                follow.StartFollowing();
-    //            }
-    //        }
-    //    }
-    //}
 
 }

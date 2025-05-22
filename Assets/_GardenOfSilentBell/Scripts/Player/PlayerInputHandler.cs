@@ -113,7 +113,7 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnToggleFollow(InputAction.CallbackContext context)
     {
         if (!isActivePlayer || !context.performed || !enabled) return;
-        FollowManager.Instance?.ToggleFollowForAll();
+        //FollowManager.Instance?.ToggleFollow();
     }
 
     public void OnSwitch(InputAction.CallbackContext context)

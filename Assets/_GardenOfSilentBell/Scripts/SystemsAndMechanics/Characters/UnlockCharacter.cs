@@ -1,0 +1,49 @@
+using UnityEngine;
+
+public class UnlockCharacter : MonoBehaviour
+{
+    public string characterNameToUnlock;
+    public bool switchToUnlockedCharacter = true;
+
+    /// <summary>
+    /// Unlocks the character by name and optionally switches to it.
+    /// </summary>
+    /// <returns>True if the character was successfully unlocked, false otherwise.</returns>
+    public bool TryUnlockCharacter()
+    {
+        var manager = CharacterManager.Instance;
+        if (manager == null)
+        {
+            Debug.LogError("[UnlockCharacter] CharacterManager not found!");
+            return false;
+        }
+
+        for (int i = 0; i < manager.CharacterCount; i++)
+        {
+            var character = manager.GetCharacterEntry(i);
+            if (character.character.name == characterNameToUnlock)
+            {
+                if (!character.isUnlocked)
+                {
+                    character.isUnlocked = true;
+                    Debug.Log($"[UnlockCharacter] Character '{characterNameToUnlock}' unlocked!");
+
+                    if (switchToUnlockedCharacter)
+                    {
+                        manager.SetActiveCharacter(i);
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Debug.Log($"[UnlockCharacter] Character '{characterNameToUnlock}' was already unlocked.");
+                    return false;
+                }
+            }
+        }
+
+        Debug.LogWarning($"[UnlockCharacter] Character with name '{characterNameToUnlock}' not found in CharacterManager.");
+        return false;
+    }
+}
