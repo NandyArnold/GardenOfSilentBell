@@ -127,7 +127,7 @@ public class CharacterManager : MonoBehaviour
 
             if (handler != null)
             {
-                handler.UnbindInputActions();
+                handler.UnbindAllInputActions();
                 handler.isActivePlayer = false;
                 handler.enabled = false;
             }
@@ -199,7 +199,7 @@ public class CharacterManager : MonoBehaviour
         selectedEntry.character.layer = LayerMask.NameToLayer("PlayerActive");
         selectedHandler.enabled = true;
         selectedHandler.isActivePlayer = true;
-        selectedHandler.BindInputActions();
+        //selectedHandler.BindAllInputActions();
         activeCharacterIndex = index;
         activeCharacter = selectedEntry.character;
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerInputHandler : MonoBehaviour
@@ -13,6 +14,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool isActivePlayer = true;
 
+    private bool actionsBound = false;  
+
 
 
     private void Awake()
@@ -21,58 +24,24 @@ public class PlayerInputHandler : MonoBehaviour
 
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
-
-
-
-
-        if (playerInput == null)
-        {
-            Debug.LogError("PlayerInput is missing from " + gameObject.name);
-            return;
-        }
-
-        if (playerInput.actions == null)
-        {
-            Debug.LogError("PlayerInput.actions is null on " + gameObject.name);
-            return;
-        }
-
-        // Hook into events from InputAction
-        playerInput.actions["Move"].performed += OnMove;
-        playerInput.actions["Move"].canceled += OnMove;
-
-        playerInput.actions["Jump"].performed += OnJump;
-        playerInput.actions["Interact"].performed += OnInteract;
-
-        playerInput.actions["Sprint"].performed += OnSprint;
-        playerInput.actions["Sprint"].canceled += OnSprint;
-
-        playerInput.actions["Switch"].performed += OnSwitch;
-
-        playerInput.actions["ToggleFollow"].performed += OnToggleFollow;
-
-
+        Debug.Log($"[OnEnable] {gameObject.name}");
+        if (playerInput == null) playerInput = GetComponent<PlayerInput>();
+        BindAllInputActions();
     }
 
-    void OnDisable()
+
+    private void OnDisable()
     {
-        if (playerInput == null || playerInput.actions == null) return;
-
-        playerInput.actions["Move"].performed -= OnMove;
-        playerInput.actions["Move"].canceled -= OnMove;
-        playerInput.actions["Jump"].performed -= OnJump;
-        playerInput.actions["Interact"].performed -= OnInteract;
-        playerInput.actions["Sprint"].performed -= OnSprint;
-        playerInput.actions["Sprint"].canceled -= OnSprint;
-        playerInput.actions["Switch"].performed -= OnSwitch;
-        playerInput.actions["ToggleFollow"].performed -= OnToggleFollow;
-
+        Debug.Log($"[OnDisable] {gameObject.name}");
+        UnbindAllInputActions();
     }
     private void OnDestroy()
     {
-
+        Debug.Log($"[OnDestroy] {gameObject.name}");
+        UnbindAllInputActions();
+        playerInput = null;
     }
 
     private void LateUpdate()
@@ -84,6 +53,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext context)
     {
+        //Debug.Log($"[OnMove] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !enabled) return;
 
         if (context.canceled)
@@ -98,24 +68,28 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext context)
     {
+        //Debug.Log($"[OnJump] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !context.performed || !enabled) return;
         JumpPressed = true;
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
+        Debug.Log($"[OnInteract] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !context.performed || !enabled) return;
         InteractPressed = true;
     }
 
     private void OnSprint(InputAction.CallbackContext context)
     {
+        Debug.Log($"[OnSprint] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !context.performed || !enabled) return;
         SprintPressed = true;
     }
 
     public void OnToggleFollow(InputAction.CallbackContext context)
     {
+        Debug.Log($"[OnToggleFollow] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !context.performed || !enabled) return;
 
         if (FollowManager.Instance != null)
@@ -132,26 +106,29 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnSwitch(InputAction.CallbackContext context)
     {
         Debug.Log($"[PlayerInputHandler] OnSwitch called on {gameObject.name}, isActivePlayer: {isActivePlayer}");
+        //Debug.Log($"[OnSwitch] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
 
         if (!playerInput.inputIsActive || !isActivePlayer || !context.performed)
             return;
 
-        if (CharacterManager.Instance == null)
-        {
-            Debug.Break(); // Pause the game in Editor
-            Debug.LogError("[PlayerInputHandler] CharacterManager.Instance is null just before switching!");
-            return;
-        }
+        StartCoroutine(DeferredSwitch());
 
-        try
-        {
-            Debug.Log("[PlayerInputHandler] Trying to switch character...");
-            CharacterManager.Instance.SwitchCharacter();
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[PlayerInputHandler] Exception during character switch: {ex.Message}\n{ex.StackTrace}");
-        }
+        //if (CharacterManager.Instance == null)
+        //{
+        //    Debug.Break(); // Pause the game in Editor
+        //    Debug.LogError("[PlayerInputHandler] CharacterManager.Instance is null just before switching!");
+        //    return;
+        //}
+
+        //try
+        //{
+        //    Debug.Log("[PlayerInputHandler] Trying to switch character...");
+        //    CharacterManager.Instance.SwitchCharacter();
+        //}
+        //catch (System.Exception ex)
+        //{
+        //    Debug.LogError($"[PlayerInputHandler] Exception during character switch: {ex.Message}\n{ex.StackTrace}");
+        //}
     }
 
     public void ResetInput()
@@ -166,26 +143,44 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-    public void UnbindInputActions()
+    public void BindAllInputActions()
     {
-        if (playerInput == null || playerInput.actions == null)
+        if (actionsBound || playerInput == null || playerInput.actions == null)
             return;
 
-        Debug.Log($"[PlayerInputHandler] Unbinding input actions for {gameObject.name}");
-
-        playerInput.actions["Switch"].performed -= OnSwitch;
-        // Repeat for other actions if needed
-    }
-
-    public void BindInputActions()
-    {
-        if (playerInput == null || playerInput.actions == null)
-            return;
-
-        Debug.Log($"[PlayerInputHandler] Binding input actions for {gameObject.name}");
-
+        playerInput.actions["Move"].performed += OnMove;
+        playerInput.actions["Move"].canceled += OnMove;
+        playerInput.actions["Jump"].performed += OnJump;
+        playerInput.actions["Interact"].performed += OnInteract;
+        playerInput.actions["Sprint"].performed += OnSprint;
+        playerInput.actions["Sprint"].canceled += OnSprint;
         playerInput.actions["Switch"].performed += OnSwitch;
+        playerInput.actions["ToggleFollow"].performed += OnToggleFollow;
+
+        actionsBound = true;
     }
 
+    public void UnbindAllInputActions()
+    {
+        if (!actionsBound || playerInput == null || playerInput.actions == null)
+            return;
+
+        playerInput.actions["Move"].performed -= OnMove;
+        playerInput.actions["Move"].canceled -= OnMove;
+        playerInput.actions["Jump"].performed -= OnJump;
+        playerInput.actions["Interact"].performed -= OnInteract;
+        playerInput.actions["Sprint"].performed -= OnSprint;
+        playerInput.actions["Sprint"].canceled -= OnSprint;
+        playerInput.actions["Switch"].performed -= OnSwitch;
+        playerInput.actions["ToggleFollow"].performed -= OnToggleFollow;
+
+        actionsBound = false;
+    }
+
+    private IEnumerator DeferredSwitch()
+    {
+        yield return null; // Wait one frame
+        CharacterManager.Instance.SwitchCharacter();
+    }
 
 }
