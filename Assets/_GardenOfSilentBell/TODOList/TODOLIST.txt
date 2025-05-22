@@ -1,0 +1,6 @@
+Check the following items:
+
+- TriggerBox
+- Test and implement the new trigger box for the unlock switch to switch only once triggered
+- Follow player
+- 
