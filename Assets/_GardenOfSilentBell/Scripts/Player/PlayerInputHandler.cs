@@ -110,6 +110,12 @@ public class PlayerInputHandler : MonoBehaviour
         SprintPressed = true;
     }
 
+    public void OnToggleFollow(InputAction.CallbackContext context)
+    {
+        if (!isActivePlayer || !context.performed || !enabled) return;
+        FollowManager.Instance?.ToggleFollowForAll();
+    }
+
     public void OnSwitch(InputAction.CallbackContext context)
     {
         Debug.Log($"[PlayerInputHandler] OnSwitch called on {gameObject.name}, isActivePlayer: {isActivePlayer}");

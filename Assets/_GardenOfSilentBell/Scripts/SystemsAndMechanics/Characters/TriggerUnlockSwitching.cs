@@ -28,6 +28,7 @@ public class TriggerUnlockSwitch : MonoBehaviour
         for (int i = 0; i < manager.CharacterCount; i++)
         {
             var character = manager.GetCharacterEntry(i);
+            //var follow = character.character.GetComponent<CompanionFollow>();
             if (character.character.name == characterNameToUnlock)
             {
                 if (!character.isUnlocked)
@@ -35,6 +36,11 @@ public class TriggerUnlockSwitch : MonoBehaviour
                     character.isUnlocked = true;
                     Debug.Log($"[TriggerUnlockSwitch] Character '{characterNameToUnlock}' unlocked!");
                     unlocked = true;
+
+                    //if (follow != null)
+                    //{
+                    //    follow.SetHasMetUp(true); // So they are allowed to follow later
+                    //}
 
                     if (switchToUnlockedCharacter)
                     {
