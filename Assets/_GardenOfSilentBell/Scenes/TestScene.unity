@@ -167,9 +167,9 @@ MonoBehaviour:
   - character: {fileID: 780326868}
     isUnlocked: 1
   - character: {fileID: 123063479}
-    isUnlocked: 1
+    isUnlocked: 0
   - character: {fileID: 459093529}
-    isUnlocked: 1
+    isUnlocked: 0
 --- !u!1 &123063479
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,7 +880,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -905,7 +905,7 @@ Transform:
   m_GameObject: {fileID: 289447888}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.36, y: -2.31, z: -0.0335063}
+  m_LocalPosition: {x: -8.16, y: -2.31, z: -0.0335063}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -923,6 +923,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b330976a1226bb34cb4aec115e108647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterNameToUnlock: SecondaryTestChar
+  switchToUnlockedCharacter: 1
+  oneTimeUse: 1
 --- !u!1 &446415470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,7 +1968,7 @@ Transform:
   m_GameObject: {fileID: 780326868}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.87, y: -3.93, z: 0}
+  m_LocalPosition: {x: -11.13, y: -3.93, z: 0}
   m_LocalScale: {x: 1.6576, y: 1.6576, z: 1.6576}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2164,6 +2167,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131ebf5ec9a79264d9716f392d3fe5eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &874253232
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 874253235}
+  - component: {fileID: 874253234}
+  - component: {fileID: 874253233}
+  m_Layer: 0
+  m_Name: TriggerUnlockSwitch (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &874253233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874253232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b330976a1226bb34cb4aec115e108647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterNameToUnlock: TertiaryTestChar
+  switchToUnlockedCharacter: 1
+  oneTimeUse: 1
+--- !u!61 &874253234
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874253232}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 3.26}
+  m_EdgeRadius: 0
+--- !u!4 &874253235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874253232}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5, y: -2.31, z: -0.0335063}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1562352274
 GameObject:
   m_ObjectHideFlags: 0
@@ -2334,3 +2431,4 @@ SceneRoots:
   - {fileID: 516829714}
   - {fileID: 207383162}
   - {fileID: 289447890}
+  - {fileID: 874253235}

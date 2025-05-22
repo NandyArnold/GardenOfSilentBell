@@ -13,6 +13,7 @@ public class CharacterManager : MonoBehaviour
         public bool isUnlocked;
     }
 
+    public int CharacterCount => characters.Count;
 
     [SerializeField] private List<CharacterEntry> characters = new List<CharacterEntry>();
 
@@ -167,6 +168,15 @@ public class CharacterManager : MonoBehaviour
     {
         HasMetUp = true;
         Debug.Log("Characters have met up!");
+    }
+
+    public CharacterEntry GetCharacterEntry(int index)
+    {
+        if (index >= 0 && index < characters.Count)
+        {
+            return characters[index];
+        }
+        return null;
     }
 
 }
