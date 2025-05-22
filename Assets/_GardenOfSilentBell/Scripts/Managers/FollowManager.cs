@@ -7,6 +7,8 @@ public class FollowManager : MonoBehaviour
 
     private List<CompanionFollow> companions = new List<CompanionFollow>();
 
+    public bool isFollowEnabled = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,21 +34,21 @@ public class FollowManager : MonoBehaviour
 
     public void ToggleFollowAll()
     {
+        isFollowEnabled = !isFollowEnabled;
+
         foreach (var comp in companions)
         {
             if (!comp.hasMetUp) continue;
 
-            if (comp.IsFollowing)
-            {
-                comp.StopFollowing();
-            }
-            else
-            {
+            comp.SetFollowTarget(CharacterManager.Instance?.ActiveCharacter?.transform);
+
+            if (isFollowEnabled)
                 comp.StartFollowing();
-            }
+            else
+                comp.StopFollowing();
         }
 
-        Debug.Log("[FollowManager] Toggled follow state for all companions.");
+        Debug.Log($"[FollowManager] Follow toggled. Now set to: {isFollowEnabled}");
     }
 
     public void AssignFollowTargets()
@@ -54,27 +56,31 @@ public class FollowManager : MonoBehaviour
         var activeChar = CharacterManager.Instance?.ActiveCharacter?.transform;
         if (activeChar == null) return;
 
+        companions.Clear();
         int order = 1;
+
         foreach (var entry in CharacterManager.Instance.Characters)
         {
-            if (!entry.isUnlocked || entry.character == CharacterManager.Instance.ActiveCharacter) continue;
+            if (!entry.isUnlocked || entry.character == CharacterManager.Instance.ActiveCharacter) 
+                continue;
 
             var follower = entry.character.GetComponent<CompanionFollow>();
             if (follower != null)
             {
                 RegisterCompanion(follower);
                 follower.SetFollowTarget(activeChar);
+                follower.followDistance = 1.5f + order * 0.5f;
 
-                // Set follow offset (future: use UI portrait order instead of list order)
-                float offsetX = -order * 0.75f; // space them out behind
-                follower.SetFollowOffset(new Vector2(offsetX, 0f));
-
-                if (follower.hasMetUp && !follower.IsFollowing)
-                    follower.StartFollowing();
+                if (isFollowEnabled && follower.hasMetUp)
+                    follower.StartFollowing();  // Only follow if toggle is ON
+                else
+                    follower.StopFollowing(); // Or explicitly stop if OFF
 
                 order++;
             }
         }
+
+        Debug.Log("[FollowManager] Assigned follow targets. Follow state: " + isFollowEnabled);
     }
 
     /// <summary>

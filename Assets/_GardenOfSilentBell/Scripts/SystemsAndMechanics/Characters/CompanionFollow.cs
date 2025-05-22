@@ -5,7 +5,6 @@ public class CompanionFollow : MonoBehaviour
 {
     [Header("Follow Settings")]
     public float followDistance = 1.5f;
-    public float repositionCooldown = 0.5f;
     public float moveSpeed = 5f;
     public Vector2 offset = new Vector2(-1.5f, 0f); // Offset behind the player
 
@@ -16,7 +15,6 @@ public class CompanionFollow : MonoBehaviour
     private bool isFollowing = false;
     private Transform followTarget;
     private Rigidbody2D rb;
-    private float repositionTimer = 0f;
     private SpriteFlipper spriteFlipper;
 
     public bool IsFollowing => isFollowing;
@@ -58,9 +56,9 @@ public class CompanionFollow : MonoBehaviour
     {
         if (!isFollowing || followTarget == null || !hasMetUp) return;
 
-        repositionTimer += Time.fixedDeltaTime;
+       
 
-        if (repositionTimer < repositionCooldown) return;
+        
 
         Vector2 desiredPosition = (Vector2)followTarget.position + offset;
         Vector2 currentPosition = rb.position;
@@ -74,7 +72,7 @@ public class CompanionFollow : MonoBehaviour
             spriteFlipper.Flip(direction.x);
         }
 
-        repositionTimer = 0f;
+       
     }
 
 

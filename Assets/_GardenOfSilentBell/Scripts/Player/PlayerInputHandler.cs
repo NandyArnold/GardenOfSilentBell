@@ -13,7 +13,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool isActivePlayer = true;
 
-    
+
 
     private void Awake()
     {
@@ -23,10 +23,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnEnable()
     {
-        
 
-       
-       
+
+
+
         if (playerInput == null)
         {
             Debug.LogError("PlayerInput is missing from " + gameObject.name);
@@ -72,7 +72,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void OnDestroy()
     {
-        
+
     }
 
     private void LateUpdate()
@@ -117,18 +117,41 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnToggleFollow(InputAction.CallbackContext context)
     {
         if (!isActivePlayer || !context.performed || !enabled) return;
-        Debug.Log("ToggleFollow pressed by " + gameObject.name);
-        FollowManager.Instance?.ToggleFollowAll();
+
+        if (FollowManager.Instance != null)
+        {
+            Debug.Log("ToggleFollow pressed by " + gameObject.name);
+            FollowManager.Instance.ToggleFollowAll();
+        }
+        else
+        {
+            Debug.LogWarning("FollowManager.Instance is null.");
+        }
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
     {
         Debug.Log($"[PlayerInputHandler] OnSwitch called on {gameObject.name}, isActivePlayer: {isActivePlayer}");
 
-        if (!playerInput.inputIsActive ||!isActivePlayer || !context.performed) return;
+        if (!playerInput.inputIsActive || !isActivePlayer || !context.performed)
+            return;
 
-        Debug.Log("Trying to switch character");
-        CharacterManager.Instance.SwitchCharacter();
+        if (CharacterManager.Instance == null)
+        {
+            Debug.Break(); // Pause the game in Editor
+            Debug.LogError("[PlayerInputHandler] CharacterManager.Instance is null just before switching!");
+            return;
+        }
+
+        try
+        {
+            Debug.Log("[PlayerInputHandler] Trying to switch character...");
+            CharacterManager.Instance.SwitchCharacter();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[PlayerInputHandler] Exception during character switch: {ex.Message}\n{ex.StackTrace}");
+        }
     }
 
     public void ResetInput()
@@ -143,6 +166,26 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    public void UnbindInputActions()
+    {
+        if (playerInput == null || playerInput.actions == null)
+            return;
+
+        Debug.Log($"[PlayerInputHandler] Unbinding input actions for {gameObject.name}");
+
+        playerInput.actions["Switch"].performed -= OnSwitch;
+        // Repeat for other actions if needed
+    }
+
+    public void BindInputActions()
+    {
+        if (playerInput == null || playerInput.actions == null)
+            return;
+
+        Debug.Log($"[PlayerInputHandler] Binding input actions for {gameObject.name}");
+
+        playerInput.actions["Switch"].performed += OnSwitch;
+    }
 
 
 }

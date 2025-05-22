@@ -29,8 +29,10 @@ public class UnlockCharacter : MonoBehaviour
                         manager.SetActiveCharacter(i);
                     }
 
-                    // **DO NOT trigger follow here**
-
+                    else
+                    {
+                        FollowManager.Instance?.AssignFollowTargets();
+                    }
                     return true;
                 }
                 else

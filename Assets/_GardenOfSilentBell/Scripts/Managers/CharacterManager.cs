@@ -36,6 +36,8 @@ public class CharacterManager : MonoBehaviour
             return;
         }
         Instance = this;
+        Debug.Log("[CharacterManager] Awake called");
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -62,7 +64,17 @@ public class CharacterManager : MonoBehaviour
 
     public void SwitchCharacter()
     {
-        if (characters.Count == 0) return;
+        if (characters == null || characters.Count == 0)
+        {
+            Debug.LogError("[CharacterManager] Cannot switch character — character list is null or empty.");
+            return;
+        }
+
+        if (activeCharacterIndex < 0 || activeCharacterIndex >= characters.Count)
+        {
+            Debug.LogWarning("[CharacterManager] Active character index is invalid, resetting to 0.");
+            activeCharacterIndex = 0;
+        }
 
         int originalIndex = activeCharacterIndex;
         int nextIndex = activeCharacterIndex;
@@ -70,15 +82,24 @@ public class CharacterManager : MonoBehaviour
         do
         {
             nextIndex = (nextIndex + 1) % characters.Count;
+
+            if (characters[nextIndex] == null)
+            {
+                Debug.LogWarning($"[CharacterManager] Character at index {nextIndex} is null. Skipping.");
+                continue;
+            }
+
             if (characters[nextIndex].isUnlocked)
             {
                 SetActiveCharacter(nextIndex);
                 return;
             }
+
         } while (nextIndex != originalIndex);
 
         Debug.LogWarning("[CharacterManager] No unlocked characters to switch to.");
     }
+
 
     public void SetActiveCharacter(int index)
     {
@@ -88,38 +109,60 @@ public class CharacterManager : MonoBehaviour
             return;
         }
 
+        Debug.Log($"[CharacterManager] Attempting to set active character at index {index}");
+
         // Deactivate all characters
         foreach (var entry in characters)
         {
+            if (entry?.character == null)
+            {
+                Debug.LogWarning("[CharacterManager] Skipping null character entry during deactivation");
+                continue;
+            }
+
             var obj = entry.character;
-            var handler = entry.character.GetComponent<PlayerInputHandler>();
-            var input = entry.character.GetComponent<PlayerInput>();
+            var handler = obj.GetComponent<PlayerInputHandler>();
+            var input = obj.GetComponent<PlayerInput>();
             var sprite = obj.GetComponent<SpriteRenderer>();
 
             if (handler != null)
             {
-                
+                handler.UnbindInputActions();
                 handler.isActivePlayer = false;
                 handler.enabled = false;
             }
+
             if (input != null && input.user.valid)
             {
                 input.user.UnpairDevicesAndRemoveUser();
             }
 
-            obj.GetComponent<Collider2D>().enabled = true; // optional
+            if (obj.TryGetComponent(out Collider2D collider))
+            {
+                collider.enabled = true;
+            }
+
             obj.layer = LayerMask.NameToLayer("PlayerInactive");
 
-            if(sprite != null)
+            if (sprite != null)
             {
-                sprite.sortingOrder = 9; // optional
+                sprite.sortingOrder = 9;
             }
 
             if (input != null)
+            {
                 input.enabled = false;
+            }
         }
 
         var selectedEntry = characters[index];
+
+        if (selectedEntry?.character == null)
+        {
+            Debug.LogError("[CharacterManager] Selected character is null!");
+            return;
+        }
+
         var selectedInput = selectedEntry.character.GetComponent<PlayerInput>();
         var selectedHandler = selectedEntry.character.GetComponent<PlayerInputHandler>();
         var selectedSprite = selectedEntry.character.GetComponent<SpriteRenderer>();
@@ -149,22 +192,23 @@ public class CharacterManager : MonoBehaviour
                 Debug.LogWarning($"[CharacterManager] Failed to activate control scheme for {selectedEntry.character.name}: {e.Message}");
             }
         }
-        
+
         if (selectedSprite != null)
             selectedSprite.sortingOrder = 10;
 
         selectedEntry.character.layer = LayerMask.NameToLayer("PlayerActive");
         selectedHandler.enabled = true;
         selectedHandler.isActivePlayer = true;
+        selectedHandler.BindInputActions();
         activeCharacterIndex = index;
         activeCharacter = selectedEntry.character;
 
         CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
         FollowManager.Instance?.AssignFollowTargets();
 
-
         Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }
+
 
     public void EnableSwitching()
     {
