@@ -5,7 +5,7 @@ public class FollowManager : MonoBehaviour
 {
     public static FollowManager Instance { get; private set; }
 
-    private List<CompanionFollow> companions = new List<CompanionFollow>();
+    public List<CompanionFollow> companions = new List<CompanionFollow>();
 
     public bool isFollowEnabled = false;
 
@@ -30,6 +30,9 @@ public class FollowManager : MonoBehaviour
     {
         if (companions.Contains(comp))
             companions.Remove(comp);
+
+        comp.StopFollowing(); // Ensure they stop following if unregistered
+        comp.SetFollowTarget(null); // Clear the follow target
     }
 
     public void ToggleFollowAll()

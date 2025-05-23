@@ -14,13 +14,14 @@ public class TriggerFollowZone : MonoBehaviour
 
         foreach (var entry in CharacterManager.Instance.Characters)
         {
+            CompanionFollow followComp = entry.character.GetComponent<CompanionFollow>();
+            followComp.SetHasMetUp(true);
+
             if (!entry.isUnlocked || entry.character == CharacterManager.Instance.ActiveCharacter)
                 continue;
 
-            CompanionFollow followComp = entry.character.GetComponent<CompanionFollow>();
             if (followComp != null)
             {
-                followComp.SetHasMetUp(true);
                 followComp.SetFollowTarget(CharacterManager.Instance.ActiveCharacter.transform);
             }
         }

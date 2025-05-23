@@ -183,9 +183,9 @@ GameObject:
   m_Component:
   - component: {fileID: 123063490}
   - component: {fileID: 123063489}
+  - component: {fileID: 123063491}
   - component: {fileID: 123063487}
   - component: {fileID: 123063480}
-  - component: {fileID: 123063491}
   - component: {fileID: 123063486}
   - component: {fileID: 123063485}
   - component: {fileID: 123063484}
@@ -527,8 +527,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followDistance: 1.5
-  moveSpeed: 5
-  offset: {x: -1.5, y: 0}
+  moveSpeed: 3
+  offset: {x: -1, y: 0}
   autoFollowOnMeet: 0
   hasMetUp: 0
 --- !u!1 &187399103
@@ -1091,9 +1091,9 @@ GameObject:
   m_Component:
   - component: {fileID: 459093540}
   - component: {fileID: 459093539}
+  - component: {fileID: 459093536}
   - component: {fileID: 459093538}
   - component: {fileID: 459093537}
-  - component: {fileID: 459093536}
   - component: {fileID: 459093535}
   - component: {fileID: 459093534}
   - component: {fileID: 459093533}
@@ -1435,8 +1435,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followDistance: 1.5
-  moveSpeed: 5
-  offset: {x: -1.5, y: 0}
+  moveSpeed: 3
+  offset: {x: -2, y: 0}
   autoFollowOnMeet: 0
   hasMetUp: 0
 --- !u!1 &516829712
@@ -1800,6 +1800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b2cd849535f794e8a23f407c078d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  companions: []
   isFollowEnabled: 0
 --- !u!1 &619394800
 GameObject:
@@ -2239,7 +2240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followDistance: 1.5
-  moveSpeed: 5
+  moveSpeed: 3
   offset: {x: -1.5, y: 0}
   autoFollowOnMeet: 0
   hasMetUp: 0

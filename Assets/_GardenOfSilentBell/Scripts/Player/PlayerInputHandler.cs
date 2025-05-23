@@ -53,7 +53,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        //Debug.Log($"[OnMove] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
+        Debug.Log($"[OnMove] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !enabled) return;
 
         if (context.canceled)

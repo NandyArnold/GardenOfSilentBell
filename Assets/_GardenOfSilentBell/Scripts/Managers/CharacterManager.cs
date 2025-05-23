@@ -202,7 +202,12 @@ public class CharacterManager : MonoBehaviour
         //selectedHandler.BindAllInputActions();
         activeCharacterIndex = index;
         activeCharacter = selectedEntry.character;
-
+    
+        var newCompanion = selectedEntry.character.GetComponent<CompanionFollow>();
+        if (newCompanion != null)
+        {
+            FollowManager.Instance?.UnregisterCompanion(newCompanion);
+        }
         CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
         FollowManager.Instance?.AssignFollowTargets();
 
