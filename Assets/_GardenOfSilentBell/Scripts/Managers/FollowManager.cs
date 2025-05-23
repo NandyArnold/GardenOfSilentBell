@@ -17,6 +17,8 @@ public class FollowManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     // Register companion so it's part of follow logic
@@ -72,7 +74,8 @@ public class FollowManager : MonoBehaviour
             {
                 RegisterCompanion(follower);
                 follower.SetFollowTarget(activeChar);
-                follower.followDistance = 1.5f + order * 0.5f;
+                follower.followDistance = 1f + order;
+                follower.SetFollowOffset(new Vector2(-follower.followDistance, 0f)); // <-- Add this line
                 order++;
 
                 if (isFollowEnabled && follower.hasMetUp)
@@ -98,6 +101,17 @@ public class FollowManager : MonoBehaviour
             {
                 comp.StartFollowing(); // If already met, restart following if allowed
             }
+        }
+    }
+
+    public void UpdateFollowerOffsets(bool isFacingRight)
+    {
+        int order = 1;
+        foreach (var comp in companions)
+        {
+            float offsetX = isFacingRight ? -comp.followDistance : comp.followDistance;
+            comp.SetFollowOffset(new Vector2(offsetX, 0f));
+            order++;
         }
     }
 }

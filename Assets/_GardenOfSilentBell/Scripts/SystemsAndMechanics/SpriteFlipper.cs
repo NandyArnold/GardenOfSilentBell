@@ -8,6 +8,7 @@ public class SpriteFlipper : MonoBehaviour
     private int baseDirectionMultiplier; // +1 or -1
     private int currentFacing;
     
+    public int CurrentFacing => currentFacing;// +1 for right, -1 for left
 
     public bool disableFlip = false;
 

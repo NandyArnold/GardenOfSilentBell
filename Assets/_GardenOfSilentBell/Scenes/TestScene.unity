@@ -528,7 +528,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followDistance: 1.5
   moveSpeed: 3
-  offset: {x: -1, y: 0}
+  offset: {x: -1.5, y: 0}
   autoFollowOnMeet: 0
   hasMetUp: 0
 --- !u!1 &187399103
@@ -1436,7 +1436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followDistance: 1.5
   moveSpeed: 3
-  offset: {x: -2, y: 0}
+  offset: {x: -1.5, y: 0}
   autoFollowOnMeet: 0
   hasMetUp: 0
 --- !u!1 &516829712

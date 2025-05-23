@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Character State")]
     public bool isUnlocked = true;
+
+    // Track last facing direction
+    private int lastFacing = 1; // Default to right
     private void Awake()
     {
         movement = GetComponent<MovementHandler>();
@@ -20,10 +23,17 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // Handle input, interaction, and sprite flipping (non-physics)
-        if (spriteFlipper != null && interaction != null)
+        // Check for facing change and update followers
+        if (spriteFlipper != null)
         {
-            // Disable flipping if pushing
-            spriteFlipper.disableFlip = interaction.IsPushing;
+            int currentFacing = spriteFlipper.CurrentFacing;
+            if (currentFacing != lastFacing)
+            {
+                lastFacing = currentFacing;
+                // +1 = right, -1 = left
+                bool isFacingRight = currentFacing == 1;
+                FollowManager.Instance?.UpdateFollowerOffsets(isFacingRight);
+            }
         }
 
         if (!interaction.IsPushing && input.JumpPressed)
