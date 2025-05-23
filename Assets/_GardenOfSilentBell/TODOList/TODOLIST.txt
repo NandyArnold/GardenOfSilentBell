@@ -4,3 +4,7 @@ Check the following items:
 - Test and implement the new trigger box for the unlock switch to switch only once triggered
 - Follow player
 - 
+
+
+
+Bootstrap ->MainMenu->UI scene->(all those before load additive)Intro or level 1 order of loading scenes

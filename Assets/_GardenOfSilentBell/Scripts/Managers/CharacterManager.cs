@@ -1,6 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 using System.Linq;
 
 public class CharacterManager : MonoBehaviour
@@ -8,26 +8,26 @@ public class CharacterManager : MonoBehaviour
     public static CharacterManager Instance { get; private set; }
 
     [System.Serializable]
-    public class CharacterEntry
+    public class CharacterData
     {
-        public string characterName;
-        public GameObject character;
+        public string id;                     // Unique ID (e.g. "mage", "knight")
+        public GameObject characterPrefab;             // Reference to the .characterPrefab (not in scene!)
+        [HideInInspector] public GameObject instance; // Instantiated runtime object
         public bool isUnlocked;
+        public Vector2 lastPosition;
+        public bool isActive;
     }
 
-    public GameObject activeCharacter { get; private set; }
-
-    public IReadOnlyList<CharacterEntry> Characters => characters;
-    public int CharacterCount => characters.Count;
-
-    [SerializeField] private List<CharacterEntry> characters = new List<CharacterEntry>();
+    [SerializeField] private List<CharacterData> characters = new List<CharacterData>();
 
     private int activeCharacterIndex = -1;
+    public GameObject activeCharacter { get; private set; }
 
-    public GameObject ActiveCharacter => activeCharacterIndex >= 0 ? characters[activeCharacterIndex].character : null;
-
+    public IReadOnlyList<CharacterData> Characters => characters;
+    public int CharacterCount => characters.Count;
     public bool CanSwitch { get; set; } = false;
     public bool HasMetUp { get; set; } = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,23 +35,32 @@ public class CharacterManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        Debug.Log("[CharacterManager] Awake called");
         DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        foreach (var entry in characters)
+        foreach (var data in characters)
         {
-            var input = entry.character.GetComponent<PlayerInput>();
-            if (input != null)
+            if (data.isUnlocked)
             {
-                input.DeactivateInput();
-                input.enabled = false;
+                Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
+                data.instance = Instantiate(data.characterPrefab, spawnPos, Quaternion.identity);
+                data.instance.name = data.id;
+                data.instance.SetActive(true);
+
+                var input = data.instance.GetComponent<PlayerInput>();
+                if (input != null)
+                {
+                    input.DeactivateInput();
+                    input.enabled = false;
+                }
             }
         }
 
+        // Set active character if one is unlocked
         for (int i = 0; i < characters.Count; i++)
         {
             if (characters[i].isUnlocked)
@@ -62,18 +71,23 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    public void UnlockCharacter(string id)
+    {
+        var data = characters.FirstOrDefault(c => c.id == id);
+        if (data != null && !data.isUnlocked)
+        {
+            data.isUnlocked = true;
+            data.lastPosition = Vector2.zero;
+            SaveManager.Instance?.SaveGame();
+        }
+    }
+
     public void SwitchCharacter()
     {
-        if (characters == null || characters.Count == 0)
+        if (characters.Count <= 1 || !CanSwitch)
         {
-            Debug.LogError("[CharacterManager] Cannot switch character — character list is null or empty.");
+            Debug.LogWarning("[CharacterManager] Not enough characters or switching disabled.");
             return;
-        }
-
-        if (activeCharacterIndex < 0 || activeCharacterIndex >= characters.Count)
-        {
-            Debug.LogWarning("[CharacterManager] Active character index is invalid, resetting to 0.");
-            activeCharacterIndex = 0;
         }
 
         int originalIndex = activeCharacterIndex;
@@ -82,24 +96,13 @@ public class CharacterManager : MonoBehaviour
         do
         {
             nextIndex = (nextIndex + 1) % characters.Count;
-
-            if (characters[nextIndex] == null)
-            {
-                Debug.LogWarning($"[CharacterManager] Character at index {nextIndex} is null. Skipping.");
-                continue;
-            }
-
             if (characters[nextIndex].isUnlocked)
             {
                 SetActiveCharacter(nextIndex);
                 return;
             }
-
         } while (nextIndex != originalIndex);
-
-        Debug.LogWarning("[CharacterManager] No unlocked characters to switch to.");
     }
-
 
     public void SetActiveCharacter(int index)
     {
@@ -109,18 +112,11 @@ public class CharacterManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[CharacterManager] Attempting to set active character at index {index}");
-
-        // Deactivate all characters
         foreach (var entry in characters)
         {
-            if (entry?.character == null)
-            {
-                Debug.LogWarning("[CharacterManager] Skipping null character entry during deactivation");
-                continue;
-            }
+            if (entry?.instance == null) continue;
 
-            var obj = entry.character;
+            var obj = entry.instance;
             var handler = obj.GetComponent<PlayerInputHandler>();
             var input = obj.GetComponent<PlayerInput>();
             var sprite = obj.GetComponent<SpriteRenderer>();
@@ -143,101 +139,131 @@ public class CharacterManager : MonoBehaviour
             }
 
             obj.layer = LayerMask.NameToLayer("PlayerInactive");
-
-            if (sprite != null)
-            {
-                sprite.sortingOrder = 9;
-            }
-
-            if (input != null)
-            {
-                input.enabled = false;
-            }
+            if (sprite != null) sprite.sortingOrder = 9;
+            if (input != null) input.enabled = false;
         }
 
-        var selectedEntry = characters[index];
+        var selected = characters[index];
+        if (selected?.instance == null) return;
 
-        if (selectedEntry?.character == null)
-        {
-            Debug.LogError("[CharacterManager] Selected character is null!");
-            return;
-        }
+        var selInput = selected.instance.GetComponent<PlayerInput>();
+        var selHandler = selected.instance.GetComponent<PlayerInputHandler>();
+        var selSprite = selected.instance.GetComponent<SpriteRenderer>();
 
-        var selectedInput = selectedEntry.character.GetComponent<PlayerInput>();
-        var selectedHandler = selectedEntry.character.GetComponent<PlayerInputHandler>();
-        var selectedSprite = selectedEntry.character.GetComponent<SpriteRenderer>();
+        if (selInput != null) selInput.enabled = true;
 
-        if (selectedInput == null || selectedHandler == null)
-        {
-            Debug.LogError("[CharacterManager] Selected character missing PlayerInput or PlayerInputHandler");
-            return;
-        }
-
-        selectedInput.enabled = true;
-
-        if (!selectedInput.user.valid)
-        {
-            Debug.LogWarning($"[CharacterManager] Could not switch control scheme for {selectedEntry.character.name} — user not valid or missing devices");
-        }
-        else
+        if (selInput != null && selInput.user.valid)
         {
             try
             {
-                selectedInput.user.AssociateActionsWithUser(selectedInput.actions);
-                selectedInput.user.ActivateControlScheme(selectedInput.defaultControlScheme);
-                selectedInput.ActivateInput();
+                selInput.user.AssociateActionsWithUser(selInput.actions);
+                selInput.user.ActivateControlScheme(selInput.defaultControlScheme);
+                selInput.ActivateInput();
             }
             catch (System.Exception e)
             {
-                Debug.LogWarning($"[CharacterManager] Failed to activate control scheme for {selectedEntry.character.name}: {e.Message}");
+                Debug.LogWarning($"[CharacterManager] Could not activate input: {e.Message}");
             }
         }
 
-        if (selectedSprite != null)
-            selectedSprite.sortingOrder = 10;
+        if (selSprite != null) selSprite.sortingOrder = 10;
+        selected.instance.layer = LayerMask.NameToLayer("PlayerActive");
 
-        selectedEntry.character.layer = LayerMask.NameToLayer("PlayerActive");
-        selectedHandler.enabled = true;
-        selectedHandler.isActivePlayer = true;
-        //selectedHandler.BindAllInputActions();
+        if (selHandler != null)
+        {
+            selHandler.enabled = true;
+            selHandler.isActivePlayer = true;
+        }
+
         activeCharacterIndex = index;
-        activeCharacter = selectedEntry.character;
-    
-        var newCompanion = selectedEntry.character.GetComponent<CompanionFollow>();
+        activeCharacter = selected.instance;
+
+        var newCompanion = selected.instance.GetComponent<CompanionFollow>();
         if (newCompanion != null)
         {
             FollowManager.Instance?.UnregisterCompanion(newCompanion);
         }
-        CameraFollow.Instance?.SetTarget(selectedEntry.character.transform);
+
+        CameraFollow.Instance?.SetTarget(selected.instance.transform);
         FollowManager.Instance?.AssignFollowTargets();
-
-        Debug.Log($"[CharacterManager] Active character set to: {selectedEntry.character.name}");
     }
 
-
-    public void EnableSwitching()
+    public GameObject SpawnCharacter(string id, Vector2 position)
     {
-        CanSwitch = true;
-        Debug.Log("Switching now enabled.");
-    }
-
-    public void SetMetUp()
-    {
-        HasMetUp = true;
-        Debug.Log("Characters have met up!");
-    }
-       
-
-    public CharacterEntry GetCharacterEntry(int index)
-    {
-        if (index >= 0 && index < characters.Count)
+        var data = characters.FirstOrDefault(c => c.id == id);
+        if (data != null && data.characterPrefab != null)
         {
-            return characters[index];
+            GameObject instance = Instantiate(data.characterPrefab, position, Quaternion.identity);
+            data.instance = instance;
+            return instance;
         }
         return null;
     }
-   
 
+    public CharacterData GetCharacterData(int index)
+    {
+        if (index >= 0 && index < characters.Count)
+            return characters[index];
+        return null;
+    }
 
+    public CharacterData GetCharacterById(string id)
+    {
+        return characters.FirstOrDefault(c => c.id == id);
+    }
 
+    public void EnableSwitching() => CanSwitch = true;
+    public void SetMetUp() => HasMetUp = true;
+
+    public void SaveCharacterState()
+    {
+        foreach (var data in characters)
+        {
+            PlayerPrefs.SetInt($"CharacterUnlocked_{data.id}", data.isUnlocked ? 1 : 0);
+            PlayerPrefs.SetFloat($"CharacterPosX_{data.id}", data.instance != null ? data.instance.transform.position.x : 0);
+            PlayerPrefs.SetFloat($"CharacterPosY_{data.id}", data.instance != null ? data.instance.transform.position.y : 0);
+        }
+    }
+
+    public void LoadCharacterState()
+    {
+        foreach (var data in characters)
+        {
+            data.isUnlocked = PlayerPrefs.GetInt($"CharacterUnlocked_{data.id}", 0) == 1;
+            data.lastPosition = new Vector2(
+                PlayerPrefs.GetFloat($"CharacterPosX_{data.id}", 0),
+                PlayerPrefs.GetFloat($"CharacterPosY_{data.id}", 0)
+            );
+        }
+    }
+
+    public void LoadCharacterStates(List<CharacterSaveData> saveData)
+    {
+        foreach (var saved in saveData)
+        {
+            var character = characters.FirstOrDefault(c => c.id == saved.id);
+            if (character != null)
+            {
+                character.isUnlocked = saved.isUnlocked;
+                character.lastPosition = saved.savedPosition;
+                character.isActive = saved.isActive;
+
+                if (character.isUnlocked && character.characterPrefab != null)
+                {
+                    character.instance = Instantiate(character.characterPrefab, saved.savedPosition, Quaternion.identity);
+                    character.instance.name = character.id;
+                }
+            }
+        }
+
+        // Set active character from loaded data
+        for (int i = 0; i < characters.Count; i++)
+        {
+            if (characters[i].isActive)
+            {
+                SetActiveCharacter(i);
+                break;
+            }
+        }
+    }
 }

@@ -13,6 +13,8 @@ public class CompanionFollow : MonoBehaviour
     public bool hasMetUp = false;
 
     private bool isFollowing = false;
+
+    public string followTargetId; // e.g. "hero"
     private Transform followTarget;
     private Rigidbody2D rb;
     private SpriteFlipper spriteFlipper;
@@ -25,6 +27,11 @@ public class CompanionFollow : MonoBehaviour
         spriteFlipper = GetComponent<SpriteFlipper>();
     }
 
+    private void Start()
+    {
+        // On load, re-find the follow target by ID
+        followTarget = CharacterManager.Instance.GetCharacterById(followTargetId)?.instance?.transform;
+    }
     public void SetFollowTarget(Transform target)
     {
         followTarget = target;

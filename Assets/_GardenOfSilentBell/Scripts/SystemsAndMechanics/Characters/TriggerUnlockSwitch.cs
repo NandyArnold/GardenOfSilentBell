@@ -12,6 +12,11 @@ public class TriggerUnlockSwitch : MonoBehaviour
     private void Awake()
     {
         unlocker = GetComponent<UnlockCharacter>();
+        if (unlocker == null)
+        {
+            Debug.LogError("[TriggerUnlockSwitch] Missing UnlockCharacter component!");
+            enabled = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

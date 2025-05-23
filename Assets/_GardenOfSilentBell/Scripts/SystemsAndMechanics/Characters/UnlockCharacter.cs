@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class UnlockCharacter : MonoBehaviour
 {
-    public string characterNameToUnlock;
+    public string characterNameToUnlock;         // This should match the 'id' field of CharacterData
     public bool switchToUnlockedCharacter = true;
 
     public bool TryUnlockCharacter()
@@ -16,12 +16,13 @@ public class UnlockCharacter : MonoBehaviour
 
         for (int i = 0; i < manager.CharacterCount; i++)
         {
-            var character = manager.GetCharacterEntry(i);
-            if (character.character.name == characterNameToUnlock)
+            var character = manager.GetCharacterData(i);
+            if (character.id == characterNameToUnlock)
             {
                 if (!character.isUnlocked)
                 {
                     character.isUnlocked = true;
+                    character.lastPosition = Vector2.zero; // Set a default position if needed
                     Debug.Log($"[UnlockCharacter] Character '{characterNameToUnlock}' unlocked!");
 
                     if (switchToUnlockedCharacter)
@@ -33,6 +34,7 @@ public class UnlockCharacter : MonoBehaviour
                     {
                         FollowManager.Instance?.AssignFollowTargets();
                     }
+                    SaveManager.Instance?.SaveGame(); // Save immediately after unlocking
                     return true;
                 }
                 else

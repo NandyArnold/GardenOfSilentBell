@@ -45,7 +45,7 @@ public class FollowManager : MonoBehaviour
         {
             if (!comp.hasMetUp) continue;
 
-            comp.SetFollowTarget(CharacterManager.Instance?.ActiveCharacter?.transform);
+            comp.SetFollowTarget(CharacterManager.Instance?.activeCharacter?.transform);
 
             if (isFollowEnabled)
                 comp.StartFollowing();
@@ -58,7 +58,7 @@ public class FollowManager : MonoBehaviour
 
     public void AssignFollowTargets()
     {
-        var activeChar = CharacterManager.Instance?.ActiveCharacter?.transform;
+        var activeChar = CharacterManager.Instance?.activeCharacter?.transform;
         if (activeChar == null) return;
 
         companions.Clear();
@@ -66,10 +66,10 @@ public class FollowManager : MonoBehaviour
 
         foreach (var entry in CharacterManager.Instance.Characters)
         {
-            if (!entry.isUnlocked || entry.character == CharacterManager.Instance.ActiveCharacter) 
+            if (!entry.isUnlocked || entry.instance == CharacterManager.Instance.activeCharacter) 
                 continue;
 
-            var follower = entry.character.GetComponent<CompanionFollow>();
+            var follower = entry.instance.GetComponent<CompanionFollow>();
             if (follower != null)
             {
                 RegisterCompanion(follower);
