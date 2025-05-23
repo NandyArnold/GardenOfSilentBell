@@ -44,7 +44,13 @@ public class CompanionFollow : MonoBehaviour
 
     public void StartFollowing()
     {
+        if (followTarget == null && CharacterManager.Instance != null)
+        {
+            followTarget = CharacterManager.Instance.ActiveCharacter?.transform;
+        }
+
         isFollowing = true;
+        
     }
 
     public void StopFollowing()

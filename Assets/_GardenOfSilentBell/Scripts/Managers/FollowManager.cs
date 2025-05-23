@@ -70,13 +70,13 @@ public class FollowManager : MonoBehaviour
                 RegisterCompanion(follower);
                 follower.SetFollowTarget(activeChar);
                 follower.followDistance = 1.5f + order * 0.5f;
+                order++;
 
                 if (isFollowEnabled && follower.hasMetUp)
                     follower.StartFollowing();  // Only follow if toggle is ON
                 else
                     follower.StopFollowing(); // Or explicitly stop if OFF
 
-                order++;
             }
         }
 

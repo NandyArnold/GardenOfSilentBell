@@ -6,13 +6,15 @@ public class SpriteFlipper : MonoBehaviour
 
     [SerializeField] private Facing defaultFacing = Facing.Right;
     private int baseDirectionMultiplier; // +1 or -1
-    private int currentFacing = 1;
+    private int currentFacing;
+    
 
     public bool disableFlip = false;
 
     void Awake()
     {
         baseDirectionMultiplier = defaultFacing == Facing.Right ? 1 : -1;
+        currentFacing = baseDirectionMultiplier;
     }
 
     public void Flip(float moveDirection)
