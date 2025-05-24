@@ -25,7 +25,7 @@ public class SpawnManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+
     }
 
     public GameObject SpawnCharacterById(string id, Vector2 fallbackPosition)
@@ -41,6 +41,34 @@ public class SpawnManager : MonoBehaviour
         GameObject instance = Instantiate(characterData.characterPrefab, spawnPos, Quaternion.identity);
         instance.name = id;
         return instance;
+    }
+
+    public GameObject SpawnCharacterOnSceneLoad(string id, Vector2 position)
+    {
+        var characterData = CharacterManager.Instance.GetCharacterById(id);
+        if (characterData == null || characterData.characterPrefab == null)
+        {
+            Debug.LogWarning($"[SpawnManager] No prefab for character ID '{id}'.");
+            return null;
+        }
+
+        // Always use the provided position, ignore per-character spawn points
+        GameObject instance = Instantiate(characterData.characterPrefab, position, Quaternion.identity);
+        instance.name = id;
+        return instance;
+    }
+
+
+    public void RefreshSpawnPoints()
+    {
+        Debug.Log("[SpawnManager] Refreshing spawn points...");
+        SaveManager.Instance?.SaveGame(); // Load saved data to get spawn points
+        // Find by tag, name, or component type as you prefer
+        var start = GameObject.FindWithTag("StartSpawnPoint");
+        var ret = GameObject.FindWithTag("ReturnSpawnPoint");
+
+        startSpawnPoint = start ? start.transform : null;
+        returnSpawnPoint = ret ? ret.transform : null;
     }
 
     private Vector2? GetSpawnPointForCharacter(string id)
@@ -63,5 +91,7 @@ public class SpawnManager : MonoBehaviour
     {
         return returnSpawnPoint != null ? (Vector2?)returnSpawnPoint.position : null;
     }
+
+
 
 }

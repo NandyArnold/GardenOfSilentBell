@@ -14,7 +14,7 @@ public class GameStateManager : MonoBehaviour
         }
         Instance = this;
         Debug.Log("[GameStateManager] Awake called");
-        DontDestroyOnLoad(gameObject);
+        
     }
 
 

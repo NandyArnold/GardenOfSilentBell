@@ -37,22 +37,15 @@ public class CharacterManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+       
     }
 
     private void Start()
     {
+        // Only unlock the starting character if needed, but do NOT spawn here.
         UnlockCharacter("StartingCharacter"); // or whatever ID you use
        
-        var spawnPos = SpawnManager.Instance.GetStartSpawnPoint() ?? Vector2.zero;
-        var instance = SpawnManager.Instance.SpawnCharacterById("StartingCharacter", spawnPos);
-        var data = GetCharacterById("StartingCharacter");
-        if (data != null)
-        {
-            data.instance = instance;
-            data.lastPosition = spawnPos;
-            SetActiveCharacter(characters.IndexOf(data));
-        }
+        
         //foreach (var data in characters)
         //{
         //    //if (data.isUnlocked)

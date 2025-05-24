@@ -53,7 +53,7 @@ public class SaveManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+       
     }
 
     public void SaveGame()
@@ -157,6 +157,7 @@ public class SaveManager : MonoBehaviour
     // When a character reaches the exit of a level, record their current position as the return spawn point for that scene
     public void MarkCharacterReachedExit(string characterId, string sceneName, Vector2? returnPosition = null)
     {
+        Debug.Log($"[SaveManager] MarkCharacterReachedExit called for {characterId} in {sceneName} (returnPosition={returnPosition})");
         if (!File.Exists(savePath)) return;
 
         string json = File.ReadAllText(savePath);
@@ -229,6 +230,11 @@ public class SaveManager : MonoBehaviour
 
     public int GetSceneOrderIndex(string sceneName)
     {
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            Debug.LogWarning("[SaveManager] GetSceneOrderIndex called with null or empty sceneName.");
+            return -1;
+        }
         if (sceneOrder.TryGetValue(sceneName, out int index))
             return index;
         return -1; // Unknown scene order

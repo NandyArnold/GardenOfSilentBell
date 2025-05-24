@@ -11,9 +11,10 @@ public class SpawnTestController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Alpha1))
-        //{
-        //    SpawnManager.Instance.SpawnCharacterById("StartingCharacter", new Vector2(2, 0));
-        //}
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log($"[SpawnTestController] {gameObject.name} ({GetInstanceID()}) Spawning StartingCharacter at (2, 0)"); Debug.Log($"[SpawnTestController] {gameObject.name} ({GetInstanceID()}) Spawning StartingCharacter at (2, 0)");
+            SpawnManager.Instance.SpawnCharacterById("StartingCharacter", new Vector2(2, 0));
+        }
     }
 }

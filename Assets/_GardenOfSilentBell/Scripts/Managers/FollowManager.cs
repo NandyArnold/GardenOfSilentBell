@@ -18,7 +18,7 @@ public class FollowManager : MonoBehaviour
         }
         Instance = this;
 
-        DontDestroyOnLoad(gameObject);
+       
     }
 
     // Register companion so it's part of follow logic

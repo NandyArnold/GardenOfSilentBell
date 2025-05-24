@@ -25,6 +25,10 @@ MonoBehaviour:
     scenePath: Assets/_GardenOfSilentBell/Scenes/GameScenes/UI_Scene.unity
     savedColor: {r: 0, g: 0, b: 0, a: 0}
     isHeader: 0
+  - sceneName: IntroScene
+    scenePath: Assets/_GardenOfSilentBell/Scenes/GameScenes/IntroScene.unity
+    savedColor: {r: 0, g: 0, b: 0, a: 0}
+    isHeader: 0
   - sceneName: Levels
     scenePath: 
     savedColor: {r: 0, g: 1, b: 0.16702724, a: 1}
@@ -35,6 +39,10 @@ MonoBehaviour:
     isHeader: 0
   - sceneName: Level_2
     scenePath: Assets/_GardenOfSilentBell/Scenes/GameScenes/Level_2.unity
+    savedColor: {r: 0, g: 0, b: 0, a: 0}
+    isHeader: 0
+  - sceneName: Level_3
+    scenePath: Assets/_GardenOfSilentBell/Scenes/GameScenes/Level_3.unity
     savedColor: {r: 0, g: 0, b: 0, a: 0}
     isHeader: 0
   - sceneName: TestScenes

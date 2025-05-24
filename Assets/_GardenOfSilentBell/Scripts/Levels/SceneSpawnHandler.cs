@@ -25,18 +25,23 @@ public class SceneSpawnHandler : MonoBehaviour
         if (spawnPos.HasValue)
         {
             Debug.Log($"[SceneSpawnHandler] Spawning character '{characterId}' at saved return position {spawnPos.Value} in scene '{scene.name}'.");
-            CharacterManager.Instance.activeCharacter.transform.position = spawnPos.Value;
+            if (CharacterManager.Instance.activeCharacter != null)
+                CharacterManager.Instance.activeCharacter.transform.position = spawnPos.Value;
+            else
+                Debug.LogWarning("[SceneSpawnHandler] activeCharacter is null, cannot set position.");
         }
         else
         {
             Debug.LogWarning($"[SceneSpawnHandler] No saved spawn point found for character '{characterId}' in scene '{scene.name}'. Attempting to use default spawn point.");
-            // Fallback: use SpawnManager's default start spawn point if available
             Vector2? defaultSpawn = SpawnManager.Instance.GetStartSpawnPoint();
 
             if (defaultSpawn.HasValue)
             {
                 Debug.Log($"[SceneSpawnHandler] No saved spawn point found for '{characterId}'. Using default start spawn point {defaultSpawn.Value}.");
-                CharacterManager.Instance.activeCharacter.transform.position = defaultSpawn.Value;
+                if (CharacterManager.Instance.activeCharacter != null)
+                    CharacterManager.Instance.activeCharacter.transform.position = defaultSpawn.Value;
+                else
+                    Debug.LogWarning("[SceneSpawnHandler] activeCharacter is null, cannot set position.");
             }
             else
             {
