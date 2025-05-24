@@ -33,11 +33,32 @@ public class GameBootstrapper : MonoBehaviour
             Debug.Log("[GameBootstrapper] No save found, loading fallback scene...");
             SceneManager.LoadScene(fallbackScene);
         }
+
     }
 
     private System.Collections.IEnumerator LoadSceneDelayed(string sceneName)
     {
         yield return null; // Delay by one frame to ensure Awake() on managers runs first
+       
         SceneManager.LoadScene(sceneName);
+
+        yield return null; // Wait an additional frame so new scene loads before we initialize characters
+
+        CharacterManager.Instance?.InitializeUnlockedCharacters();
+
+        foreach (var charData in SaveManager.Instance.GetCharactersThatReachedExit())
+        {
+            if (charData.isUnlocked)
+            {
+                Vector2 spawnPos = SpawnManager.Instance.GetStartSpawnPoint() ?? Vector2.zero;
+                var instance = SpawnManager.Instance.SpawnCharacterById(charData.id, spawnPos);
+                var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
+                if (cmChar != null)
+                {
+                    cmChar.instance = instance;
+                    cmChar.lastPosition = spawnPos;
+                }
+            }
+        }
     }
 }

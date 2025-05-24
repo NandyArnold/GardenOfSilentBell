@@ -17,6 +17,7 @@ public class CharacterSaveData
     public bool isUnlocked;
     public Vector2 savedPosition;
     public bool isActive;
+    public bool reachedExit;
 }
 
 public class SaveManager : MonoBehaviour
@@ -88,5 +89,29 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(savePath);
         GameSaveData saveData = JsonUtility.FromJson<GameSaveData>(json);
         return saveData.currentScene;
+    }
+
+    public void MarkCharacterReachedExit(string id)
+    {
+        if (!File.Exists(savePath)) return;
+
+        string json = File.ReadAllText(savePath);
+        GameSaveData data = JsonUtility.FromJson<GameSaveData>(json);
+
+        var character = data.characterStates.Find(c => c.id == id);
+        if (character != null)
+        {
+            character.reachedExit = true;
+            File.WriteAllText(savePath, JsonUtility.ToJson(data));
+            Debug.Log($"Marked {id} as having reached the exit.");
+        }
+    }
+
+    public List<CharacterSaveData> GetCharactersThatReachedExit()
+    {
+        if (!File.Exists(savePath)) return new List<CharacterSaveData>();
+        string json = File.ReadAllText(savePath);
+        GameSaveData data = JsonUtility.FromJson<GameSaveData>(json);
+        return data.characterStates.FindAll(c => c.reachedExit);
     }
 }

@@ -42,23 +42,34 @@ public class CharacterManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (var data in characters)
+        UnlockCharacter("StartingCharacter"); // or whatever ID you use
+       
+        var spawnPos = SpawnManager.Instance.GetStartSpawnPoint() ?? Vector2.zero;
+        var instance = SpawnManager.Instance.SpawnCharacterById("StartingCharacter", spawnPos);
+        var data = GetCharacterById("StartingCharacter");
+        if (data != null)
         {
-            if (data.isUnlocked)
-            {
-                Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
-                data.instance = Instantiate(data.characterPrefab, spawnPos, Quaternion.identity);
-                data.instance.name = data.id;
-                data.instance.SetActive(true);
-
-                var input = data.instance.GetComponent<PlayerInput>();
-                if (input != null)
-                {
-                    input.DeactivateInput();
-                    input.enabled = false;
-                }
-            }
+            data.instance = instance;
+            data.lastPosition = spawnPos;
+            SetActiveCharacter(characters.IndexOf(data));
         }
+        //foreach (var data in characters)
+        //{
+        //    //if (data.isUnlocked)
+        //    //{
+        //    //    Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
+        //    //    data.instance = Instantiate(data.characterPrefab, spawnPos, Quaternion.identity);
+        //    //    data.instance.name = data.id;
+        //    //    data.instance.SetActive(true);
+
+        //    //    var input = data.instance.GetComponent<PlayerInput>();
+        //    //    if (input != null)
+        //    //    {
+        //    //        input.DeactivateInput();
+        //    //        input.enabled = false;
+        //    //    }
+        //    //}
+        //}
 
         // Set active character if one is unlocked
         for (int i = 0; i < characters.Count; i++)
@@ -260,6 +271,30 @@ public class CharacterManager : MonoBehaviour
         for (int i = 0; i < characters.Count; i++)
         {
             if (characters[i].isActive)
+            {
+                SetActiveCharacter(i);
+                break;
+            }
+        }
+    }
+
+    public void InitializeUnlockedCharacters()
+    {
+        foreach (var data in characters)
+        {
+            if (data.isUnlocked)
+            {
+                Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
+                GameObject instance = SpawnManager.Instance.SpawnCharacterById(data.id, spawnPos);
+                data.instance = instance;
+              
+            }
+        }
+
+        // Set the active character (you can skip if already restored from save)
+        for (int i = 0; i < characters.Count; i++)
+        {
+            if (characters[i].isUnlocked && characters[i].isActive)
             {
                 SetActiveCharacter(i);
                 break;
