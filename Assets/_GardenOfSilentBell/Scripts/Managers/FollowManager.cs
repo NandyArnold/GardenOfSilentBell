@@ -86,7 +86,7 @@ public class FollowManager : MonoBehaviour
             }
         }
 
-        Debug.Log("[FollowManager] Assigned follow targets. Follow state: " + isFollowEnabled);
+        //Debug.Log("[FollowManager] Assigned follow targets. Follow state: " + isFollowEnabled);
     }
 
     /// <summary>

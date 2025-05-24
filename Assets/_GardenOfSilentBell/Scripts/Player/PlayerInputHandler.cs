@@ -26,7 +26,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log($"[OnEnable] {gameObject.name}");
+        //Debug.Log($"[OnEnable] {gameObject.name}");
         if (playerInput == null) playerInput = GetComponent<PlayerInput>();
         BindAllInputActions();
     }
@@ -34,12 +34,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log($"[OnDisable] {gameObject.name}");
+        //Debug.Log($"[OnDisable] {gameObject.name}");
         UnbindAllInputActions();
     }
     private void OnDestroy()
     {
-        Debug.Log($"[OnDestroy] {gameObject.name}");
+        //Debug.Log($"[OnDestroy] {gameObject.name}");
         UnbindAllInputActions();
         playerInput = null;
     }
@@ -53,7 +53,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        Debug.Log($"[OnMove] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
+        //Debug.Log($"[OnMove] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !enabled) return;
 
         if (context.canceled)

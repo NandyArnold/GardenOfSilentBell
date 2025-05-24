@@ -301,4 +301,12 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
+
+    public string GetActiveCharacterId()
+    {
+        if (activeCharacter == null) return null;
+
+        var data = characters.Find(c => c.instance == activeCharacter);
+        return data != null ? data.id : null;
+    }
 }
