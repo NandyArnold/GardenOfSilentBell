@@ -159,72 +159,79 @@ public class GameBootstrapper : MonoBehaviour
         var unlocked = CharacterManager.Instance.Characters.Where(c => c.isUnlocked).ToList();
         Debug.Log($"[GameBootstrapper] Unlocked characters count: {unlocked.Count}");
 
-        //foreach (var charData in SaveManager.Instance.GetCharactersThatReachedExit())
-        foreach (var charData in CharacterManager.Instance.Characters.Where(c => c.isUnlocked))
+
+        foreach (var charData in unlocked)
         {
-
-            var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
-            Vector2? returnPoint = null;
-
-            if (saveData != null && saveData.reachedExit)
-            {
-                // Only use the return point if reachedExit is true
-                returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
-            }
-
-            Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', reachedExit={saveData?.reachedExit}, returnPoint={returnPoint}");
-
-            Vector2 spawnPos = returnPoint
-                ?? SpawnManager.Instance.GetReturnSpawnPoint()
-                ?? SpawnManager.Instance.GetStartSpawnPoint()
-                ?? Vector2.zero;
-
-            var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
-
-            var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
-            if (cmChar != null)
-            {
-                cmChar.instance = instance;
-                cmChar.lastPosition = spawnPos;
-            }
-            // Log the return point for this character in the current scene
-            //var returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
-            //Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', returnPoint={returnPoint}");
-
-
-            // ---log reachedExit state from SaveManager ---
-            //var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
-            //if (saveData != null)
-            //{
-            //    Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit in this save: {saveData.reachedExit}");
-            //}
-            //else
-            //{
-            //    Debug.LogWarning($"[SaveManager] No save data found for character '{charData.id}'.");
-            //}
-            //// ---------------------------------------------------------------
-            //if (charData.isUnlocked)
-            //{
-            //    Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
-            //                   ?? SpawnManager.Instance.GetReturnSpawnPoint()
-            //                   ?? SpawnManager.Instance.GetStartSpawnPoint()
-            //                   ?? Vector2.zero;
-
-            //    //Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
-            //    //   ?? SpawnManager.Instance.GetStartSpawnPoint()
-            //    //   ?? Vector2.zero;
-
-
-            //    var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
-
-            //    var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
-            //    if (cmChar != null)
-            //    {
-            //        cmChar.instance = instance;
-            //        cmChar.lastPosition = spawnPos;
-            //    }
+            SaveManager.Instance.MarkSceneVisited(charData.id, SceneManager.GetActiveScene().name);
+            StartCoroutine(ChooseAndSpawnCharacterCoroutine(charData.id));
         }
-        
+
+        ////foreach (var charData in SaveManager.Instance.GetCharactersThatReachedExit())
+        //foreach (var charData in CharacterManager.Instance.Characters.Where(c => c.isUnlocked))
+        //{
+
+        //    var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
+        //    Vector2? returnPoint = null;
+
+        //    if (saveData != null && saveData.reachedExit)
+        //    {
+        //        // Only use the return point if reachedExit is true
+        //        returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
+        //    }
+
+        //    Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', reachedExit={saveData?.reachedExit}, returnPoint={returnPoint}");
+
+        //    Vector2 spawnPos = returnPoint
+        //        ?? SpawnManager.Instance.GetReturnSpawnPoint()
+        //        ?? SpawnManager.Instance.GetStartSpawnPoint()
+        //        ?? Vector2.zero;
+
+        //    var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
+
+        //    var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
+        //    if (cmChar != null)
+        //    {
+        //        cmChar.instance = instance;
+        //        cmChar.lastPosition = spawnPos;
+        //    }
+        //    // Log the return point for this character in the current scene
+        //    //var returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
+        //    //Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', returnPoint={returnPoint}");
+
+
+        //    // ---log reachedExit state from SaveManager ---
+        //    //var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
+        //    //if (saveData != null)
+        //    //{
+        //    //    Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit in this save: {saveData.reachedExit}");
+        //    //}
+        //    //else
+        //    //{
+        //    //    Debug.LogWarning($"[SaveManager] No save data found for character '{charData.id}'.");
+        //    //}
+        //    //// ---------------------------------------------------------------
+        //    //if (charData.isUnlocked)
+        //    //{
+        //    //    Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
+        //    //                   ?? SpawnManager.Instance.GetReturnSpawnPoint()
+        //    //                   ?? SpawnManager.Instance.GetStartSpawnPoint()
+        //    //                   ?? Vector2.zero;
+
+        //    //    //Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
+        //    //    //   ?? SpawnManager.Instance.GetStartSpawnPoint()
+        //    //    //   ?? Vector2.zero;
+
+
+        //    //    var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
+
+        //    //    var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
+        //    //    if (cmChar != null)
+        //    //    {
+        //    //        cmChar.instance = instance;
+        //    //        cmChar.lastPosition = spawnPos;
+        //    //    }
+        //}
+
     }
 
     private IEnumerator LoadFallbackSceneAndSpawn()
@@ -258,6 +265,56 @@ public class GameBootstrapper : MonoBehaviour
         }
         previousScene = fallbackScene;
     }
+
+    private IEnumerator ChooseAndSpawnCharacterCoroutine(string characterId)
+    {
+        var saveData = SaveManager.Instance.GetCharacterSaveDataById(characterId);
+        Vector2? returnPoint = null;
+        bool reachedExit = saveData != null && saveData.reachedExit;
+
+        if (reachedExit)
+            returnPoint = SaveManager.Instance.GetReturnSpawnPoint(characterId, SceneManager.GetActiveScene().name);
+
+        Vector2? sceneReturnPoint = SpawnManager.Instance.GetReturnSpawnPoint();
+        Vector2? startPoint = SpawnManager.Instance.GetStartSpawnPoint();
+
+        string spawnType;
+        Vector2 spawnPos;
+        if (returnPoint.HasValue)
+        {
+            spawnType = "PerCharacterReturn";
+            spawnPos = returnPoint.Value;
+        }
+        //else if (sceneReturnPoint.HasValue)
+        //{
+        //    spawnType = "SceneReturn";
+        //    spawnPos = sceneReturnPoint.Value;
+        //}
+        else if (startPoint.HasValue)
+        {
+            spawnType = "Start";
+            spawnPos = startPoint.Value;
+        }
+        else
+        {
+            spawnType = "DefaultZero";
+            spawnPos = Vector2.zero;
+        }
+
+        Debug.Log($"[GameBootstrapper] Spawning '{characterId}' using {spawnType} at {spawnPos}");
+
+        var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(characterId, spawnPos);
+
+        var cmChar = CharacterManager.Instance.GetCharacterById(characterId);
+        if (cmChar != null)
+        {
+            cmChar.instance = instance;
+            cmChar.lastPosition = spawnPos;
+        }
+
+        yield return null;
+    }
+
 
 }
 

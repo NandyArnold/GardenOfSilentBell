@@ -58,28 +58,43 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
-        GameSaveData saveData = new GameSaveData
+        GameSaveData saveData;
+        if (File.Exists(savePath))
         {
-            currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
-            characterStates = new List<CharacterSaveData>()
-        };
+            string json = File.ReadAllText(savePath);
+            saveData = JsonUtility.FromJson<GameSaveData>(json);
+            if (saveData.characterStates == null)
+                saveData.characterStates = new List<CharacterSaveData>();
+        }
+        else
+        {
+            saveData = new GameSaveData();
+            saveData.characterStates = new List<CharacterSaveData>();
+        }
+
+        saveData.currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         foreach (var character in CharacterManager.Instance.Characters)
         {
-            saveData.characterStates.Add(new CharacterSaveData
+            var existing = saveData.characterStates.Find(c => c.id == character.id);
+            if (existing == null)
             {
-                id = character.id,
-                isUnlocked = character.isUnlocked,
-                savedPosition = character.instance != null
-                    ? (Vector2)character.instance.transform.position
-                    : character.lastPosition,
-                isActive = character.instance == CharacterManager.Instance.activeCharacter
-            });
+                existing = new CharacterSaveData { id = character.id };
+                saveData.characterStates.Add(existing);
+            }
+            existing.isUnlocked = character.isUnlocked;
+            existing.savedPosition = character.instance != null
+                ? (Vector2)character.instance.transform.position
+                : character.lastPosition;
+            existing.isActive = character.instance == CharacterManager.Instance.activeCharacter;
+            // Do NOT overwrite reachedExit or returnSpawnPoints here!
         }
 
         File.WriteAllText(savePath, JsonUtility.ToJson(saveData));
         Debug.Log("Game saved.");
+        Debug.Log("[SaveManager] Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
     }
+
 
     public void LoadGame()
     {

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -57,6 +58,9 @@ public class SpawnManager : MonoBehaviour
         instance.name = id;
         return instance;
     }
+
+
+  
 
 
     public void RefreshSpawnPoints()
