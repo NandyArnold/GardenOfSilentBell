@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Linq;
+using UnityEditor.Overlays;
 
 public class GameBootstrapper : MonoBehaviour
 {
@@ -100,8 +101,11 @@ public class GameBootstrapper : MonoBehaviour
             return;
 
         InitializeCharactersInScene();
-        CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
-        
+        //  CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
+        if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
+        {
+            CharacterManager.Instance.SetActiveCharacter(0);
+        }
 
         int oldIndex = oldScene.buildIndex;
         int newIndex = newScene.buildIndex;
@@ -145,8 +149,10 @@ public class GameBootstrapper : MonoBehaviour
         {
             Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
             SpawnManager.Instance.RefreshSpawnPoints();
+            SpawnManager.Instance.SpawnAllSceneCharacters();
+            //FollowManager.Instance.AssignFollowTargets();
         }
-        //SpawnManager.Instance.RefreshSpawnPoints();
+       
 
         //Checks how many characters are unlocked
         var unlocked = CharacterManager.Instance.Characters.Where(c => c.isUnlocked).ToList();

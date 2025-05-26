@@ -357,5 +357,5 @@ MonoBehaviour:
   moveSpeed: 3
   offset: {x: -1.5, y: 0}
   autoFollowOnMeet: 0
-  hasMetUp: 0
+  hasMetUp: 1
   followTargetId: 

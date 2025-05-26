@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using static CharacterManager;
+using System.Linq;
 
 [System.Serializable]
 public class GameSaveData
@@ -28,6 +29,7 @@ public class CharacterSaveData
     public Vector2 savedPosition;
     public bool isActive;
     public bool reachedExit;
+    public bool hasMetUp;
     public List<ReturnSpawnPointData> returnSpawnPoints = new List<ReturnSpawnPointData>();
 }
 
@@ -79,6 +81,7 @@ public class SaveManager : MonoBehaviour
                 ? (Vector2)character.instance.transform.position
                 : character.lastPosition;
             existing.isActive = character.instance == CharacterManager.Instance.activeCharacter;
+            existing.hasMetUp = character.hasMetUp;
             // Do NOT overwrite reachedExit or returnSpawnPoints here!
         }
 
@@ -101,7 +104,7 @@ public class SaveManager : MonoBehaviour
 
         if (saveData.characterStates == null)       //nullchecks for characterStates, for safety
             saveData.characterStates = new List<CharacterSaveData>();
-
+        Debug.Log("[SaveManager] Loading character state: " + savePath);
         CharacterManager.Instance.LoadCharacterStates(saveData.characterStates);
         // Load the scene by name if needed
         Debug.Log("Game loaded.");
@@ -165,13 +168,14 @@ public class SaveManager : MonoBehaviour
     public void MarkCharacterReachedExit(string characterId, string sceneName, Vector2? returnPosition = null)
     {
         Debug.Log($"[SaveManager] MarkCharacterReachedExit called for {characterId} in {sceneName} (returnPosition={returnPosition})");
+
         if (!File.Exists(savePath)) return;
 
         string json = File.ReadAllText(savePath);
         GameSaveData data = JsonUtility.FromJson<GameSaveData>(json);
 
-        var character = data.characterStates.Find(c => c.id == characterId);
-        if (character != null)
+        // Update reachedExit and return position for all unlocked characters
+        foreach (var character in data.characterStates.Where(c => c.isUnlocked))
         {
             character.reachedExit = true;
 
@@ -179,15 +183,25 @@ public class SaveManager : MonoBehaviour
             {
                 var rsp = character.returnSpawnPoints.Find(r => r.sceneName == sceneName);
                 if (rsp != null)
+                {
                     rsp.returnPosition = returnPosition.Value;
+                }
                 else
-                    character.returnSpawnPoints.Add(new ReturnSpawnPointData { sceneName = sceneName, returnPosition = returnPosition.Value });
+                {
+                    character.returnSpawnPoints.Add(new ReturnSpawnPointData
+                    {
+                        sceneName = sceneName,
+                        returnPosition = returnPosition.Value
+                    });
+                }
             }
 
-            File.WriteAllText(savePath, JsonUtility.ToJson(data));
-            Debug.Log($"Marked {characterId} as having reached the exit in {sceneName}.");
+            Debug.Log($"Marked {character.id} as having reached the exit in {sceneName}.");
         }
+
+        File.WriteAllText(savePath, JsonUtility.ToJson(data));
     }
+
 
 
     // a method to get the stored return spawn point per scene for a character:

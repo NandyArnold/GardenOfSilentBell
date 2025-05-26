@@ -211,6 +211,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3366765717898142424, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
+      propertyPath: spawnPoints.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366765717898142424, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
+      propertyPath: spawnPoints.Array.data[0].characterId
+      value: SecondaryTestCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366765717898142424, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
+      propertyPath: spawnPoints.Array.data[1].characterId
+      value: TertiaryTestChar
+      objectReference: {fileID: 0}
     - target: {fileID: 4059912208265042386, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
       propertyPath: m_Name
       value: GameBootstrapper

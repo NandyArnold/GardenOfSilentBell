@@ -24,7 +24,15 @@ public class UnlockCharacter : MonoBehaviour
                     character.isUnlocked = true;
                     character.lastPosition = Vector2.zero; // Set a default position if needed
                     Debug.Log($"[UnlockCharacter] Character '{characterNameToUnlock}' unlocked!");
-
+                    if (character.instance != null)
+                    {
+                        var controller = character.instance.GetComponent<PlayerController>();
+                        if (controller != null)
+                        {
+                            controller.isUnlocked = true;
+                        }
+                    }
+                    CharacterManager.Instance.EnableSwitching();
                     if (switchToUnlockedCharacter)
                     {
                         manager.SetActiveCharacter(i);

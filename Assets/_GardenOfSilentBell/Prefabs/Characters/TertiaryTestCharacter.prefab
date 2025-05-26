@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 8425067173095880826}
   - component: {fileID: 6598652731574980998}
   m_Layer: 0
-  m_Name: TertiaryTestChar
+  m_Name: TertiaryTestCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

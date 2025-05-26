@@ -16,6 +16,7 @@ public class CharacterManager : MonoBehaviour
         public bool isUnlocked;
         public Vector2 lastPosition;
         public bool isActive;
+        public bool hasMetUp;
     }
 
     [SerializeField] private List<CharacterData> characters = new List<CharacterData>();
@@ -88,7 +89,7 @@ public class CharacterManager : MonoBehaviour
 
     public void SwitchCharacter()
     {
-        if (characters.Count <= 1 || !CanSwitch)
+        if (characters.Count(c => c.isUnlocked) <= 1 || !CanSwitch)
         {
             Debug.LogWarning("[CharacterManager] Not enough characters or switching disabled.");
             return;

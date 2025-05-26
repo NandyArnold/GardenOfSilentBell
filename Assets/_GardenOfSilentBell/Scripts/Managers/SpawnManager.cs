@@ -1,22 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance { get; private set; }
-
-
+    
     [System.Serializable]
     public class SpawnPoint
     {
         public string characterId;
         public Transform spawnTransform;
     }
+
+
     [SerializeField] private Transform startSpawnPoint;
     [SerializeField] private Transform returnSpawnPoint;
 
-    [SerializeField] private List<SpawnPoint> spawnPoints;
+    [SerializeField] private List<SpawnPoint> spawnPoints= new List<SpawnPoint>();
 
     private void Awake()
     {
@@ -63,13 +65,30 @@ public class SpawnManager : MonoBehaviour
   
 
 
-    public void RefreshSpawnPoints()
+public void RefreshSpawnPoints()
     {
-        //Debug.Log("[SpawnManager] Refreshing spawn points...");
         SaveManager.Instance?.SaveGame(); // Load saved data to get spawn points
-        // Find by tag, name, or component type as you prefer
+                                          // Find by tag, name, or component type as you prefer
+        spawnPoints.ForEach(sp =>
+        {
+            // Look for a GameObject in the scene with a matching name
+            var found = GameObject.Find($"Spawn_{sp.characterId}");
+            if (found != null)
+            {
+                sp.spawnTransform = found.transform;
+            }
+            else
+            {
+                Debug.LogWarning($"[SpawnManager] No spawn transform found for characterId: {sp.characterId}");
+            }
+        });
+
+
         var start = GameObject.FindWithTag("StartSpawnPoint");
         var ret = GameObject.FindWithTag("ReturnSpawnPoint");
+
+        // Update spawnPoints by finding all GameObjects with a SpawnPoint component
+        //spawnPoints = FindObjectsOfType<SpawnPoint>().ToList();
 
         startSpawnPoint = start ? start.transform : null;
         returnSpawnPoint = ret ? ret.transform : null;
@@ -102,6 +121,9 @@ public class SpawnManager : MonoBehaviour
     {
         foreach (var character in CharacterManager.Instance.Characters)
         {
+            if (character.isUnlocked || character.id == "StartingCharacter")
+                continue;
+
             var spawnPoint = GetSpawnPointForCharacter(character.id);
             if (spawnPoint.HasValue)
             {
@@ -115,5 +137,6 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+
 
 }
