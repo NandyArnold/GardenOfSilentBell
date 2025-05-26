@@ -28,6 +28,7 @@ public class TriggerFollowZone : MonoBehaviour
                 followComp.SetFollowTarget(CharacterManager.Instance.activeCharacter.transform);
             }
         }
+        SaveManager.Instance?.SaveGame(); // Save the game state after triggering follow
 
         FollowManager.Instance?.AssignFollowTargets();
 

@@ -101,6 +101,7 @@ public class GameBootstrapper : MonoBehaviour
             return;
 
         InitializeCharactersInScene();
+        Debug.Log($"[GameBootstrapper] Initialized Characters, setting active'{oldScene.name}' to '{newScene.name}'");
         //  CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
         if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
         {
@@ -164,6 +165,20 @@ public class GameBootstrapper : MonoBehaviour
             SaveManager.Instance.MarkSceneVisited(charData.id, SceneManager.GetActiveScene().name);
             StartCoroutine(ChooseAndSpawnCharacterCoroutine(charData.id));
         }
+        var activeChar = unlocked.FirstOrDefault(c => c.isActive);
+        if (activeChar != null)
+        {
+            int idx = CharacterManager.Instance.Characters.ToList().IndexOf(activeChar);
+            if (idx >= 0)
+                CharacterManager.Instance.SetActiveCharacter(idx);
+        }
+        else if (unlocked.Count > 0)
+        {
+            // Fallback: set the first unlocked character as active
+            int idx = CharacterManager.Instance.Characters.ToList().IndexOf(unlocked[0]);
+            if (idx >= 0)
+                CharacterManager.Instance.SetActiveCharacter(idx);
+        }
 
     }
 
@@ -196,6 +211,7 @@ public class GameBootstrapper : MonoBehaviour
         {
             data.instance = instance;
             data.lastPosition = startPos;
+            Debug.Log($"[GameBootstrapper]-- COROUTINE LoadFallbackSceneAndSpawn : Setting 'StartingCharacter' as active character");
             CharacterManager.Instance.SetActiveCharacter(CharacterManager.Instance.Characters.ToList().IndexOf(data));
         }
         previousScene = fallbackScene;
@@ -241,6 +257,16 @@ public class GameBootstrapper : MonoBehaviour
         {
             cmChar.instance = instance;
             cmChar.lastPosition = spawnPos;
+
+            
+            if (saveData != null)
+            {
+                var companionFollow = instance.GetComponent<CompanionFollow>();
+                if (companionFollow != null)
+                {
+                    companionFollow.SetHasMetUp(saveData.hasMetUp);
+                }
+            }
         }
 
         yield return null;

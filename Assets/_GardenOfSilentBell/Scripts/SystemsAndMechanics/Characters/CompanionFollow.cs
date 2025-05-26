@@ -39,6 +39,7 @@ public class CompanionFollow : MonoBehaviour
 
     public void SetHasMetUp(bool metUp)
     {
+        Debug.Log($"[CompanionFollow] SetHasMetUp called on '{gameObject.name}' with value: {metUp}");
         hasMetUp = metUp;
 
         if (autoFollowOnMeet && hasMetUp)

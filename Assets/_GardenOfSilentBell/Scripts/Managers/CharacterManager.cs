@@ -44,9 +44,12 @@ public class CharacterManager : MonoBehaviour
     private void Start()
     {
         // Only unlock the starting character if needed, but do NOT spawn here.
-        UnlockCharacter("StartingCharacter"); // or whatever ID you use
-       
-        
+        if (!SaveManager.Instance.HasSave())
+        {
+            UnlockCharacter("StartingCharacter");
+        }       // or whatever ID you use
+
+
         //foreach (var data in characters)
         //{
         //    //if (data.isUnlocked)
@@ -230,11 +233,19 @@ public class CharacterManager : MonoBehaviour
                 character.isUnlocked = saved.isUnlocked;
                 character.lastPosition = saved.savedPosition;
                 character.isActive = saved.isActive;
+                character.hasMetUp = saved.hasMetUp;
 
                 if (character.isUnlocked && character.characterPrefab != null)
                 {
                     character.instance = Instantiate(character.characterPrefab, saved.savedPosition, Quaternion.identity);
                     character.instance.name = character.id;
+                }
+                var companionFollow = character.instance != null
+               ? character.instance.GetComponent<CompanionFollow>()
+               : null;
+                if (companionFollow != null)
+                {
+                    companionFollow.SetHasMetUp(saved.hasMetUp);
                 }
             }
         }

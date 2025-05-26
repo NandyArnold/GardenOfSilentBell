@@ -81,7 +81,18 @@ public class SaveManager : MonoBehaviour
                 ? (Vector2)character.instance.transform.position
                 : character.lastPosition;
             existing.isActive = character.instance == CharacterManager.Instance.activeCharacter;
-            existing.hasMetUp = character.hasMetUp;
+            var companionFollow = character.instance != null ? character.instance.GetComponent<CompanionFollow>() : null;
+            if (companionFollow != null)
+            {
+                Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' found. hasMetUp={companionFollow.hasMetUp}");
+            }
+            else
+            {
+                Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' is NULL.");
+            }
+            existing.hasMetUp = companionFollow != null ? companionFollow.hasMetUp : character.hasMetUp;
+
+            // Do NOT overwrite reachedExit or returnS
             // Do NOT overwrite reachedExit or returnSpawnPoints here!
         }
 

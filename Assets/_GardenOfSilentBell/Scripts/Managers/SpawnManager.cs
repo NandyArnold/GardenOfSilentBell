@@ -67,7 +67,7 @@ public class SpawnManager : MonoBehaviour
 
 public void RefreshSpawnPoints()
     {
-        SaveManager.Instance?.SaveGame(); // Load saved data to get spawn points
+         // Load saved data to get spawn points
                                           // Find by tag, name, or component type as you prefer
         spawnPoints.ForEach(sp =>
         {
