@@ -65,7 +65,7 @@ public class SpawnManager : MonoBehaviour
 
     public void RefreshSpawnPoints()
     {
-        Debug.Log("[SpawnManager] Refreshing spawn points...");
+        //Debug.Log("[SpawnManager] Refreshing spawn points...");
         SaveManager.Instance?.SaveGame(); // Load saved data to get spawn points
         // Find by tag, name, or component type as you prefer
         var start = GameObject.FindWithTag("StartSpawnPoint");
@@ -97,5 +97,23 @@ public class SpawnManager : MonoBehaviour
     }
 
 
+
+    public void SpawnAllSceneCharacters()
+    {
+        foreach (var character in CharacterManager.Instance.Characters)
+        {
+            var spawnPoint = GetSpawnPointForCharacter(character.id);
+            if (spawnPoint.HasValue)
+            {
+                var instance = SpawnCharacterOnSceneLoad(character.id, spawnPoint.Value);
+                character.instance = instance;
+                character.lastPosition = spawnPoint.Value;
+            }
+            else
+            {
+                Debug.LogWarning($"[SpawnManager] No spawn point found for character '{character.id}' in this scene.");
+            }
+        }
+    }
 
 }

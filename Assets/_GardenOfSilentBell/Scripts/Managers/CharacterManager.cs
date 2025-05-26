@@ -219,28 +219,6 @@ public class CharacterManager : MonoBehaviour
     public void EnableSwitching() => CanSwitch = true;
     public void SetMetUp() => HasMetUp = true;
 
-    public void SaveCharacterState()
-    {
-        foreach (var data in characters)
-        {
-            PlayerPrefs.SetInt($"CharacterUnlocked_{data.id}", data.isUnlocked ? 1 : 0);
-            PlayerPrefs.SetFloat($"CharacterPosX_{data.id}", data.instance != null ? data.instance.transform.position.x : 0);
-            PlayerPrefs.SetFloat($"CharacterPosY_{data.id}", data.instance != null ? data.instance.transform.position.y : 0);
-        }
-    }
-
-    public void LoadCharacterState()
-    {
-        foreach (var data in characters)
-        {
-            data.isUnlocked = PlayerPrefs.GetInt($"CharacterUnlocked_{data.id}", 0) == 1;
-            data.lastPosition = new Vector2(
-                PlayerPrefs.GetFloat($"CharacterPosX_{data.id}", 0),
-                PlayerPrefs.GetFloat($"CharacterPosY_{data.id}", 0)
-            );
-        }
-    }
-
     public void LoadCharacterStates(List<CharacterSaveData> saveData)
     {
         foreach (var saved in saveData)

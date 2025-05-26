@@ -54,6 +54,7 @@ public class GameBootstrapper : MonoBehaviour
             {
                 Debug.Log("[GameBootstrapper] No save found, already in fallback scene, spawning character...");
                 // Directly spawn the character here, no need to reload the scene
+                Debug.Log("[GameBootstrapper]-START Refreshing spawn points and spawning character in fallback scene...");
                 SpawnManager.Instance.RefreshSpawnPoints();
                 var startPos = SpawnManager.Instance.GetStartSpawnPoint() ?? Vector2.zero;
                 var instance = SpawnManager.Instance.SpawnCharacterById("StartingCharacter", startPos);
@@ -86,23 +87,15 @@ public class GameBootstrapper : MonoBehaviour
         // Set the newly loaded scene as active
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
 
-        InitializeCharactersInScene();
+        //InitializeCharactersInScene();
         previousScene = sceneName;
     }
 
     private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
     {
-        string oldName = !string.IsNullOrEmpty(oldScene.name) ? oldScene.name : previousScene;
-        Debug.Log($"[GameBootstrapper] OnActiveSceneChanged: oldScene='{oldName}', newScene='{newScene.name}'");
-
-        if (string.IsNullOrEmpty(oldName)) //|| oldName == newScene.name)
-        {
-            previousScene = newScene.name;
-            Debug.Log($"[GameBootstrapper] Skipping scene init: oldScene.name='{oldName}', newScene.name='{newScene.name}'");
+        if (newScene.buildIndex == 0)
             return;
-        }
 
-        Debug.Log($"[GameBootstrapper] Scene changed from '{oldName}' to '{newScene.name}'");
         if (SaveManager.Instance == null)
             return;
 
@@ -110,14 +103,13 @@ public class GameBootstrapper : MonoBehaviour
         CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
         
 
-        int oldIndex = SaveManager.Instance.GetSceneOrderIndex(oldName);
-        int newIndex = SaveManager.Instance.GetSceneOrderIndex(newScene.name);
+        int oldIndex = oldScene.buildIndex;
+        int newIndex = newScene.buildIndex;
 
-        Debug.Log($"[GameBootstrapper] Scene changed from '{oldName}' to '{newScene.name}' (old index: {oldIndex}, new index: {newIndex})");
-
+       
         if (oldIndex > newIndex)
         {
-            SaveManager.Instance.ResetReachedExitForSceneForAllCharacters(oldName);
+            SaveManager.Instance.ResetReachedExitForSceneForAllCharacters(oldScene.name);
         }
 
         previousScene = newScene.name;
@@ -151,9 +143,10 @@ public class GameBootstrapper : MonoBehaviour
         }
         else
         {
+            Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
             SpawnManager.Instance.RefreshSpawnPoints();
         }
-        SpawnManager.Instance.RefreshSpawnPoints();
+        //SpawnManager.Instance.RefreshSpawnPoints();
 
         //Checks how many characters are unlocked
         var unlocked = CharacterManager.Instance.Characters.Where(c => c.isUnlocked).ToList();
@@ -165,72 +158,6 @@ public class GameBootstrapper : MonoBehaviour
             SaveManager.Instance.MarkSceneVisited(charData.id, SceneManager.GetActiveScene().name);
             StartCoroutine(ChooseAndSpawnCharacterCoroutine(charData.id));
         }
-
-        ////foreach (var charData in SaveManager.Instance.GetCharactersThatReachedExit())
-        //foreach (var charData in CharacterManager.Instance.Characters.Where(c => c.isUnlocked))
-        //{
-
-        //    var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
-        //    Vector2? returnPoint = null;
-
-        //    if (saveData != null && saveData.reachedExit)
-        //    {
-        //        // Only use the return point if reachedExit is true
-        //        returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
-        //    }
-
-        //    Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', reachedExit={saveData?.reachedExit}, returnPoint={returnPoint}");
-
-        //    Vector2 spawnPos = returnPoint
-        //        ?? SpawnManager.Instance.GetReturnSpawnPoint()
-        //        ?? SpawnManager.Instance.GetStartSpawnPoint()
-        //        ?? Vector2.zero;
-
-        //    var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
-
-        //    var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
-        //    if (cmChar != null)
-        //    {
-        //        cmChar.instance = instance;
-        //        cmChar.lastPosition = spawnPos;
-        //    }
-        //    // Log the return point for this character in the current scene
-        //    //var returnPoint = SaveManager.Instance.GetReturnSpawnPoint(charData.id, SceneManager.GetActiveScene().name);
-        //    //Debug.Log($"[GameBootstrapper] For character '{charData.id}' in scene '{SceneManager.GetActiveScene().name}', returnPoint={returnPoint}");
-
-
-        //    // ---log reachedExit state from SaveManager ---
-        //    //var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
-        //    //if (saveData != null)
-        //    //{
-        //    //    Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit in this save: {saveData.reachedExit}");
-        //    //}
-        //    //else
-        //    //{
-        //    //    Debug.LogWarning($"[SaveManager] No save data found for character '{charData.id}'.");
-        //    //}
-        //    //// ---------------------------------------------------------------
-        //    //if (charData.isUnlocked)
-        //    //{
-        //    //    Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
-        //    //                   ?? SpawnManager.Instance.GetReturnSpawnPoint()
-        //    //                   ?? SpawnManager.Instance.GetStartSpawnPoint()
-        //    //                   ?? Vector2.zero;
-
-        //    //    //Vector2 spawnPos = SaveManager.Instance.GetReturnSpawnPoint(charData.id, UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
-        //    //    //   ?? SpawnManager.Instance.GetStartSpawnPoint()
-        //    //    //   ?? Vector2.zero;
-
-
-        //    //    var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(charData.id, spawnPos);
-
-        //    //    var cmChar = CharacterManager.Instance.GetCharacterById(charData.id);
-        //    //    if (cmChar != null)
-        //    //    {
-        //    //        cmChar.instance = instance;
-        //    //        cmChar.lastPosition = spawnPos;
-        //    //    }
-        //}
 
     }
 
@@ -251,12 +178,14 @@ public class GameBootstrapper : MonoBehaviour
         yield return null; // Wait for the scene to load
 
         // Ensure spawn points are refreshed from the scene
+        Debug.Log("[GameBootstrapper]-- COROUTINE LoadFallbackSceneAndSpawn : Refreshing spawn points in fallback scene...");
         SpawnManager.Instance.RefreshSpawnPoints();
 
         // Spawn the main character at the start spawn point
         var startPos = SpawnManager.Instance.GetStartSpawnPoint() ?? Vector2.zero;
         var instance = SpawnManager.Instance.SpawnCharacterById("StartingCharacter", startPos);
         var data = CharacterManager.Instance.GetCharacterById("StartingCharacter");
+        Debug.Log($"[GameBootstrapper]-- COROUTINE LoadFallbackSceneAndSpawn : Spawning 'StartingCharacter' at {startPos}");
         if (data != null)
         {
             data.instance = instance;
@@ -285,11 +214,7 @@ public class GameBootstrapper : MonoBehaviour
             spawnType = "PerCharacterReturn";
             spawnPos = returnPoint.Value;
         }
-        //else if (sceneReturnPoint.HasValue)
-        //{
-        //    spawnType = "SceneReturn";
-        //    spawnPos = sceneReturnPoint.Value;
-        //}
+       
         else if (startPoint.HasValue)
         {
             spawnType = "Start";

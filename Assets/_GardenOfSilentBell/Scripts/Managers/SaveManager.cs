@@ -33,14 +33,6 @@ public class CharacterSaveData
 
 public class SaveManager : MonoBehaviour
 {
-
-    private Dictionary<string, int> sceneOrder = new Dictionary<string, int>()
-{
-    {"Level_1", 1},
-    {"Level_2", 2},
-    {"Level_3", 3},
-    {"Level_4", 4}
-};
     public static SaveManager Instance;
     private string savePath => Path.Combine(Application.persistentDataPath, "save.json");
 
@@ -91,8 +83,8 @@ public class SaveManager : MonoBehaviour
         }
 
         File.WriteAllText(savePath, JsonUtility.ToJson(saveData));
-        Debug.Log("Game saved.");
-        Debug.Log("[SaveManager] Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
+       
+        Debug.Log("[SaveManager]Game saved. Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
     }
 
 
@@ -241,18 +233,6 @@ public class SaveManager : MonoBehaviour
             File.WriteAllText(savePath, JsonUtility.ToJson(data));
             Debug.Log($"Reset reachedExit for all characters for scene {sceneName}.");
         }
-    }
-
-    public int GetSceneOrderIndex(string sceneName)
-    {
-        if (string.IsNullOrEmpty(sceneName))
-        {
-            Debug.LogWarning("[SaveManager] GetSceneOrderIndex called with null or empty sceneName.");
-            return -1;
-        }
-        if (sceneOrder.TryGetValue(sceneName, out int index))
-            return index;
-        return -1; // Unknown scene order
     }
 
 
