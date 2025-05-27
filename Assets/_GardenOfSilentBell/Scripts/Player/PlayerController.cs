@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     private PlayerInputHandler input;
     private SpriteFlipper spriteFlipper;
 
+    private TelekinesisSkill telekinesisSkill;
+    [SerializeField]
+    private TelekinesisSO telekinesisSO;
+
     [Header("Character State")]
     public bool isUnlocked = true;
 
@@ -18,6 +22,10 @@ public class PlayerController : MonoBehaviour
         interaction = GetComponent<InteractionHandler>();
         input = GetComponent<PlayerInputHandler>();
         spriteFlipper = GetComponent<SpriteFlipper>();
+        if (telekinesisSO != null)
+            telekinesisSkill = (TelekinesisSkill)telekinesisSO.CreateSkillInstance(gameObject);
+        telekinesisSkill.Activate();
+
     }
 
     private void Update()
@@ -41,12 +49,21 @@ public class PlayerController : MonoBehaviour
 
         if (input.InteractPressed)
             interaction.TryInteract();
+
+        if (telekinesisSkill != null)
+        {
+            if (input.GrabPressed && telekinesisSkill != null)
+            {
+                telekinesisSkill.TryGrab();
+            }
+        }
     }
 
     private void FixedUpdate()
     {
         // Handle movement and pushing (physics)
         movement.ProcessMove(input.MovementInput, interaction.IsPushing, input.SprintPressed);
+        Debug.Log($"[FixedUpdate] SprintPressed: {input.SprintPressed}");
 
         if (interaction.IsPushing && interaction.CurrentPushTarget != null)
         {
@@ -57,26 +74,5 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    //private void Update()
-    //{
-    //    movement.ProcessMove(input.MovementInput, interaction.IsPushing);
-
-    //    if (spriteFlipper != null && interaction != null)
-    //    {
-    //        // Disable flipping if pushing
-    //        spriteFlipper.disableFlip = interaction.IsPushing;
-    //    }
-
-    //    if (!interaction.IsPushing && input.JumpPressed)
-    //        movement.Jump();
-
-    //    if (input.InteractPressed)
-    //        interaction.TryInteract();
-
-    //    if (interaction.IsPushing && interaction.CurrentPushTarget != null)
-    //    {
-    //        Debug.Log($"[PlayerController] IsPushing: {interaction.IsPushing}");
-    //        interaction.CurrentPushTarget.Push(input.MovementInput, movement.pushMoveSpeed);
-    //    }
-    //}
+    
 }

@@ -19,6 +19,9 @@ GameObject:
   - component: {fileID: 7706264612339633298}
   - component: {fileID: 2550426574546781414}
   - component: {fileID: 769148582508823316}
+  - component: {fileID: -6285696565234459817}
+  - component: {fileID: 8943327431949796620}
+  - component: {fileID: -4318592177766593376}
   m_Layer: 0
   m_Name: StartingCharacter
   m_TagString: Player
@@ -220,7 +223,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   pushMoveSpeed: 2.5
-  sprintSpeed: 8
+  sprintSpeed: 15
 --- !u!114 &780079320116669071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6f6dd3e02a38e43ae8d64561565c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  telekinesisSO: {fileID: 0}
   isUnlocked: 1
 --- !u!114 &3671603122160044288
 MonoBehaviour:
@@ -359,3 +363,50 @@ MonoBehaviour:
   autoFollowOnMeet: 0
   hasMetUp: 1
   followTargetId: 
+--- !u!114 &-6285696565234459817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809627024261835097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79432dd5e3690a43a8a7ffb2a6ffd98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disarmRange: 2
+  trapLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &8943327431949796620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809627024261835097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c43d3351762e844a7667f584b8d04d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  climbSpeed: 3
+  climbableLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &-4318592177766593376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809627024261835097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5648355b3bf189b45a6353843a04e9d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignedSkills:
+  - {fileID: 11400000, guid: 9b2eb825c6ff3d441988254fc575aa8b, type: 2}
+  - {fileID: 11400000, guid: 73f0015c02281bf4f99e3ef894f36130, type: 2}

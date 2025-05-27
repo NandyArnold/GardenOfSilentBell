@@ -106,6 +106,7 @@ public class CharacterManager : MonoBehaviour
             nextIndex = (nextIndex + 1) % characters.Count;
             if (characters[nextIndex].isUnlocked)
             {
+
                 SetActiveCharacter(nextIndex);
                 return;
             }

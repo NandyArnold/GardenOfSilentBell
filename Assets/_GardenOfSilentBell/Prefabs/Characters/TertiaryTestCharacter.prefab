@@ -19,6 +19,9 @@ GameObject:
   - component: {fileID: 1175108031282012182}
   - component: {fileID: 8425067173095880826}
   - component: {fileID: 6598652731574980998}
+  - component: {fileID: -7878448075478386285}
+  - component: {fileID: -3249671027189850036}
+  - component: {fileID: -424447158627010873}
   m_Layer: 0
   m_Name: TertiaryTestCharacter
   m_TagString: Player
@@ -233,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6f6dd3e02a38e43ae8d64561565c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  telekinesisSO: {fileID: 0}
   isUnlocked: 0
 --- !u!114 &243665382573315261
 MonoBehaviour:
@@ -359,3 +363,44 @@ MonoBehaviour:
   autoFollowOnMeet: 0
   hasMetUp: 0
   followTargetId: 
+--- !u!114 &-7878448075478386285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677110069252118318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6213cd7aa2d6fe44a6e1e769634ff6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraJumpForce: 15
+--- !u!114 &-3249671027189850036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677110069252118318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ff22085134361449b9fdc7efbdb2b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heavyTag: Heavy
+--- !u!114 &-424447158627010873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677110069252118318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5648355b3bf189b45a6353843a04e9d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignedSkills:
+  - {fileID: 11400000, guid: 62812193efd26664491d836dbae10a0e, type: 2}
+  - {fileID: 11400000, guid: 70164995a391e5a4799d3c1f01d3549d, type: 2}

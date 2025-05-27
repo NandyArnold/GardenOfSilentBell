@@ -9,6 +9,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool JumpPressed { get; private set; }
     public bool InteractPressed { get; private set; }
     public bool SprintPressed { get; private set; }
+    public bool GrabPressed { get; private set; }   
 
     private PlayerInput playerInput;
 
@@ -48,7 +49,8 @@ public class PlayerInputHandler : MonoBehaviour
     {
         JumpPressed = false;
         InteractPressed = false;
-        SprintPressed = false;
+        //SprintPressed = false;
+        GrabPressed = false;    
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -80,11 +82,29 @@ public class PlayerInputHandler : MonoBehaviour
         InteractPressed = true;
     }
 
+    private void OnGrab(InputAction.CallbackContext context)
+    {
+        if (!isActivePlayer || !context.performed || !enabled) return;
+        GrabPressed = true;
+    }
+
     private void OnSprint(InputAction.CallbackContext context)
     {
-        Debug.Log($"[OnSprint] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
-        if (!isActivePlayer || !context.performed || !enabled) return;
-        SprintPressed = true;
+        //Debug.Log($"[OnSprint] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
+
+
+        if (!enabled || !isActivePlayer) return;
+
+        if (context.performed)
+        {
+            SprintPressed = true;
+            Debug.Log($"[OnSprint] Sprint started");
+        }
+        else if (context.canceled)
+        {
+            SprintPressed = false;
+            Debug.Log($"[OnSprint] Sprint stopped");
+        }
     }
 
     public void OnToggleFollow(InputAction.CallbackContext context)
@@ -110,7 +130,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (!playerInput.inputIsActive || !isActivePlayer || !context.performed)
             return;
-
+        MovementInput = Vector2.zero; // Reset movement input to prevent unwanted movement during switch
         StartCoroutine(DeferredSwitch());
 
         //if (CharacterManager.Instance == null)
@@ -156,6 +176,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Sprint"].canceled += OnSprint;
         playerInput.actions["Switch"].performed += OnSwitch;
         playerInput.actions["ToggleFollow"].performed += OnToggleFollow;
+        playerInput.actions["Grab"].performed += OnGrab;
 
         actionsBound = true;
     }
@@ -173,6 +194,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerInput.actions["Sprint"].canceled -= OnSprint;
         playerInput.actions["Switch"].performed -= OnSwitch;
         playerInput.actions["ToggleFollow"].performed -= OnToggleFollow;
+        playerInput.actions["Grab"].performed -= OnGrab;
 
         actionsBound = false;
     }
