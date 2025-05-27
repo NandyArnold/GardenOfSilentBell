@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea3f22fe34f3a24ba9460e0d69a01a9, type: 3}
   m_Name: TelekinesisSkill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Telekinesis
   icon: {fileID: 0}
   skillType: 0
   charges: 0
   cooldown: 0
   aimPrefab: {fileID: 0}
-  interactionRange: 5
+  interactionRange: 15
   telekinesisLayer:
     serializedVersion: 2
     m_Bits: 0

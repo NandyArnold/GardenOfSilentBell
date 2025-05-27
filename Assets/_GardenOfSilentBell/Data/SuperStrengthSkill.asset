@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: 
   icon: {fileID: 0}
-  skillType: 0
+  skillType: 1
   charges: 0
   cooldown: 0
   aimPrefab: {fileID: 0}

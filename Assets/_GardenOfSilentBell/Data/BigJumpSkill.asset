@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da1e2a13261a8db47b7776c9f2fe257b, type: 3}
   m_Name: BigJumpSkill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Giant Leap
   icon: {fileID: 0}
   skillType: 0
   charges: 0

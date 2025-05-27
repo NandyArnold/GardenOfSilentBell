@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba85663ba36bde4f8a4f6e4cca98d51, type: 3}
   m_Name: AcrobaticsSkill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Wall Climb
   icon: {fileID: 0}
-  skillType: 0
+  skillType: 1
   charges: 0
   cooldown: 0
   aimPrefab: {fileID: 0}
