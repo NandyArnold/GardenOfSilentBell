@@ -15,10 +15,18 @@ public class TelekinesisSkill : ISkill
         this.inputHandler = character.GetComponent<PlayerInputHandler>();
         this.handler = character.GetComponent<TelekinesisHandler>();
 
-        if (handler != null)
-            handler.Initialize(skillData);
-    }
+        Debug.Log($"[TelekinesisSkill] Constructor called for character: {character.name}");
 
+        if (handler != null)
+        {
+            handler.Initialize(skillData);
+            Debug.Log($"[TelekinesisSkill] TelekinesisHandler initialized for {character.name}");
+        }
+        else
+        {
+            Debug.LogError($"[TelekinesisSkill] TelekinesisHandler component not found on {character.name}");
+        }
+    }
     public void Activate()
     {
         if (!CanActivate()) return;

@@ -84,6 +84,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnGrab(InputAction.CallbackContext context)
     {
+        Debug.Log($"[OnGrab] {gameObject.name} enabled={enabled} isActivePlayer={isActivePlayer}");
         if (!isActivePlayer || !context.performed || !enabled) return;
         GrabPressed = true;
     }

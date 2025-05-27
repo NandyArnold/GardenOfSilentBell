@@ -20,4 +20,14 @@ public class SkillManager : MonoBehaviour
         if (runtimeSkills[index].CanActivate())
             runtimeSkills[index].Activate();
     }
+
+    public T GetSkillOfType<T>() where T : class, ISkill
+    {
+        foreach (var skill in runtimeSkills)
+        {
+            if (skill is T match)
+                return match;
+        }
+        return null;
+    }
 }

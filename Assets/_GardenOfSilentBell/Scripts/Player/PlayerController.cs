@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -6,10 +7,10 @@ public class PlayerController : MonoBehaviour
     private InteractionHandler interaction;
     private PlayerInputHandler input;
     private SpriteFlipper spriteFlipper;
+    private TelekinesisHandler telekinesisHandler;
 
+    
     private TelekinesisSkill telekinesisSkill;
-    [SerializeField]
-    private TelekinesisSO telekinesisSO;
 
     [Header("Character State")]
     public bool isUnlocked = true;
@@ -22,10 +23,30 @@ public class PlayerController : MonoBehaviour
         interaction = GetComponent<InteractionHandler>();
         input = GetComponent<PlayerInputHandler>();
         spriteFlipper = GetComponent<SpriteFlipper>();
-        if (telekinesisSO != null)
+
+        SkillManager skillManager = GetComponent<SkillManager>();
+        if (skillManager != null)
         {
-            telekinesisSkill = (TelekinesisSkill)telekinesisSO.CreateSkillInstance(gameObject);
-            telekinesisSkill.Activate();
+            foreach (SkillSO so in skillManager.assignedSkills)
+            {
+                if (so is TelekinesisSO)
+                {
+                    telekinesisSkill = skillManager.GetSkillOfType<TelekinesisSkill>();
+                    if (telekinesisSkill != null)
+                    {
+                        Debug.Log("[PlayerController] Got TelekinesisSkill from SkillManager.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[PlayerController] TelekinesisSkill was not found in SkillManager.");
+                    }
+                    break;
+                }
+                else
+                {
+                    Debug.Log($"[PlayerController] Skill {so.name} is not TelekinesisSO, skipping.");
+                }
+            }
         }
 
     }
@@ -52,10 +73,18 @@ public class PlayerController : MonoBehaviour
         if (input.InteractPressed)
             interaction.TryInteract();
 
+
+        if(telekinesisSkill == null)
+        {
+            //Debug.LogWarning("[PlayerController] TelekinesisSkill is null, cannot grab.");
+            return;
+        }
         if (telekinesisSkill != null)
         {
+            
             if (input.GrabPressed && telekinesisSkill != null)
             {
+                Debug.Log($"[PlayerController] Grab pressed, trying to grab with TelekinesisSkill: {telekinesisSkill}");
                 telekinesisSkill.TryGrab();
             }
         }
