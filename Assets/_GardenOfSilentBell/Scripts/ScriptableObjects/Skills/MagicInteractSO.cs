@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Magic Interact")]
+[CreateAssetMenu(fileName = "MagicInteractSkill", menuName = "Skills/Magic Interact")]
 public class MagicInteractSO : SkillSO
 {
     public float interactRange = 10f;

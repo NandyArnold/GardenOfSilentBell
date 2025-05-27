@@ -26,20 +26,37 @@ public class TelekinesisHandler : MonoBehaviour
 
     public void TryGrab()
     {
-        if (!isTelekinesisActive || grabbedRb != null) return;
+        if (!isTelekinesisActive || grabbedRb != null)
+        {
+            Debug.Log("Telekinesis not active or already grabbing.");
+            return;
+        }
 
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 playerPos = transform.position;
 
         Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos, skillData.telekinesisLayer);
-        if (hit != null && Vector2.Distance(playerPos, hit.transform.position) <= skillData.interactionRange)
+        if (hit != null)
         {
-            grabbedRb = hit.attachedRigidbody;
-            if (grabbedRb != null)
+            Debug.Log("Hit object: " + hit.name);
+            if (Vector2.Distance(playerPos, hit.transform.position) <= skillData.interactionRange)
             {
-                grabbedRb.gravityScale = 0f;
-                grabbedRb.linearVelocity = Vector2.zero;
+                grabbedRb = hit.attachedRigidbody;
+                if (grabbedRb != null)
+                {
+                    Debug.Log("Grabbing object: " + grabbedRb.name);
+                    grabbedRb.gravityScale = 0f;
+                    grabbedRb.linearVelocity = Vector2.zero;
+                }
             }
+            else
+            {
+                Debug.Log("Object is out of range.");
+            }
+        }
+        else
+        {
+            Debug.Log("No object under mouse or wrong layer.");
         }
     }
 

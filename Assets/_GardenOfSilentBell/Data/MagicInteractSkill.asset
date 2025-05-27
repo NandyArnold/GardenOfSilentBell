@@ -9,16 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea3f22fe34f3a24ba9460e0d69a01a9, type: 3}
-  m_Name: TelekinesisSkill
+  m_Script: {fileID: 11500000, guid: a7a7a813e00edf54493cb501b657a6a4, type: 3}
+  m_Name: MagicInteractSkill
   m_EditorClassIdentifier: 
-  skillName: Telekinesis
+  skillName: Magic Touch
   icon: {fileID: 0}
   skillType: 0
   charges: 0
   cooldown: 0
   aimPrefab: {fileID: 0}
-  interactionRange: 15
-  telekinesisLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+  interactRange: 10

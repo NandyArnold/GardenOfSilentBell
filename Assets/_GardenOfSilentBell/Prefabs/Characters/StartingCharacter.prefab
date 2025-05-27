@@ -394,7 +394,7 @@ MonoBehaviour:
   climbSpeed: 3
   climbableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!114 &-4318592177766593376
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,8 +23,10 @@ public class PlayerController : MonoBehaviour
         input = GetComponent<PlayerInputHandler>();
         spriteFlipper = GetComponent<SpriteFlipper>();
         if (telekinesisSO != null)
+        {
             telekinesisSkill = (TelekinesisSkill)telekinesisSO.CreateSkillInstance(gameObject);
-        telekinesisSkill.Activate();
+            telekinesisSkill.Activate();
+        }
 
     }
 
@@ -63,7 +65,7 @@ public class PlayerController : MonoBehaviour
     {
         // Handle movement and pushing (physics)
         movement.ProcessMove(input.MovementInput, interaction.IsPushing, input.SprintPressed);
-        Debug.Log($"[FixedUpdate] SprintPressed: {input.SprintPressed}");
+       
 
         if (interaction.IsPushing && interaction.CurrentPushTarget != null)
         {

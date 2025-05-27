@@ -19,6 +19,9 @@ GameObject:
   - component: {fileID: 1444318943754151802}
   - component: {fileID: 1479825731484440221}
   - component: {fileID: 4673301598784431837}
+  - component: {fileID: -6637643445750856400}
+  - component: {fileID: 5575602907396653927}
+  - component: {fileID: 2687915032742670574}
   m_Layer: 0
   m_Name: SecondaryTestCharacter
   m_TagString: Player
@@ -233,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6f6dd3e02a38e43ae8d64561565c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  telekinesisSO: {fileID: 0}
   isUnlocked: 0
 --- !u!114 &7220440220694753797
 MonoBehaviour:
@@ -359,3 +363,46 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &-6637643445750856400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677356156325521091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5648355b3bf189b45a6353843a04e9d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignedSkills:
+  - {fileID: 11400000, guid: 35beecdd5d0020343b37ac1e958d407b, type: 2}
+  - {fileID: 11400000, guid: fdc4476f97d7a2341a2062bb49a19346, type: 2}
+--- !u!114 &5575602907396653927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677356156325521091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18adb4e7a848ea647a6b96262195ced5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactRange: 5
+  magicInteractLayer:
+    serializedVersion: 2
+    m_Bits: 512
+--- !u!114 &2687915032742670574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677356156325521091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2abb342cf6f91f2469d2551a08bd0a2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
