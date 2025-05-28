@@ -120,6 +120,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1533053951860496700}
     m_Modifications:
+    - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
+      propertyPath: spawnPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
+      propertyPath: spawnPoints.Array.data[0].characterId
+      value: SecondaryTestCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
+      propertyPath: spawnPoints.Array.data[1].characterId
+      value: TertiaryTestCharacter
+      objectReference: {fileID: 0}
     - target: {fileID: 6121844705109860899, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -352,11 +364,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9037208881970057870, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
       propertyPath: characters.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9037208881970057870, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
       propertyPath: characters.Array.data[1].id
       value: SecondaryTestCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 9037208881970057870, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
+      propertyPath: characters.Array.data[2].id
+      value: TertiaryTestCharacter
       objectReference: {fileID: 0}
     - target: {fileID: 9037208881970057870, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
       propertyPath: characters.Array.data[0].characterPrefab
@@ -366,6 +382,10 @@ PrefabInstance:
       propertyPath: characters.Array.data[1].characterPrefab
       value: 
       objectReference: {fileID: 6677356156325521091, guid: 8c3575f6f6986ec479c36b6705d06cd3, type: 3}
+    - target: {fileID: 9037208881970057870, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
+      propertyPath: characters.Array.data[2].characterPrefab
+      value: 
+      objectReference: {fileID: 2677110069252118318, guid: 2167d73f8e29f25428a44420eb6c70dd, type: 3}
     m_RemovedComponents:
     - {fileID: 5029114834864984308, guid: 5a708dc0387368d428626a8df645ec59, type: 3}
     m_RemovedGameObjects:

@@ -76,11 +76,13 @@ public class PlayerController : MonoBehaviour
         if (!interaction.IsPushing && input.JumpPressed)
             movement.Jump();
 
-        magicInteractHandler.HighlightMagicTarget(); // Always show glow when near something
+        if(magicInteractHandler != null)
+            magicInteractHandler.HighlightMagicTarget(); // Always show glow when near something
 
         if (input.InteractPressed)
         {
             interaction.TryInteract();
+            if(magicInteractHandler != null)
             magicInteractHandler.TryMagicInteract();
         }
 

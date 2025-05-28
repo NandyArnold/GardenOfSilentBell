@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 2677110069252118318}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.89, y: -3.93, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.6576, y: 1.6576, z: 1.6576}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -236,7 +236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6f6dd3e02a38e43ae8d64561565c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  telekinesisSO: {fileID: 0}
   isUnlocked: 0
 --- !u!114 &243665382573315261
 MonoBehaviour:
