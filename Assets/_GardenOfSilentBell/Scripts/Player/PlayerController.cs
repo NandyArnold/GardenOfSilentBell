@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
     private PlayerInputHandler input;
     private SpriteFlipper spriteFlipper;
     private TelekinesisHandler telekinesisHandler;
+    private MagicInteractHandler magicInteractHandler;
 
-    
+
     private TelekinesisSkill telekinesisSkill;
 
     [Header("Character State")]
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
         interaction = GetComponent<InteractionHandler>();
         input = GetComponent<PlayerInputHandler>();
         spriteFlipper = GetComponent<SpriteFlipper>();
+        magicInteractHandler = GetComponent<MagicInteractHandler>();
     }
 
     private void Start()
@@ -74,9 +76,13 @@ public class PlayerController : MonoBehaviour
         if (!interaction.IsPushing && input.JumpPressed)
             movement.Jump();
 
-        if (input.InteractPressed)
-            interaction.TryInteract();
+        magicInteractHandler.HighlightMagicTarget(); // Always show glow when near something
 
+        if (input.InteractPressed)
+        {
+            interaction.TryInteract();
+            magicInteractHandler.TryMagicInteract();
+        }
 
         if(telekinesisSkill == null)
         {

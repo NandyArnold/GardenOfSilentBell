@@ -5,9 +5,11 @@ public class InteractionHandler : MonoBehaviour
     public float interactionRange = 1.5f;
     public LayerMask interactableLayer;
 
+
     public bool IsPushing { get; private set; }
     
     private PushableObject currentPushTarget;
+   
     public PushableObject CurrentPushTarget => currentPushTarget;
 
     public void TryInteract()
@@ -30,6 +32,7 @@ public class InteractionHandler : MonoBehaviour
         {
             interactable.Interact();
         }
+       
     }
 
 
@@ -54,21 +57,4 @@ public class InteractionHandler : MonoBehaviour
             Debug.Log("Started pushing: " + target.name);
         }
     }
-
-    //public void TryPushPull(PushableObject target)
-    //{
-    //    if (IsPushing)
-    //    {
-    //        // Stop pushing
-    //        currentPushTarget = null;
-    //        IsPushing = false;
-    //        Debug.Log("Stopped pushing");
-    //    }
-    //    else
-    //    {
-    //        currentPushTarget = target;
-    //        IsPushing = true;
-    //        Debug.Log("Started pushing: " + target.name);
-    //    }
-    //}
 }
