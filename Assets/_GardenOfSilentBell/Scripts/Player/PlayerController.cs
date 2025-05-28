@@ -23,7 +23,10 @@ public class PlayerController : MonoBehaviour
         interaction = GetComponent<InteractionHandler>();
         input = GetComponent<PlayerInputHandler>();
         spriteFlipper = GetComponent<SpriteFlipper>();
+    }
 
+    private void Start()
+    {
         SkillManager skillManager = GetComponent<SkillManager>();
         if (skillManager != null)
         {
@@ -48,8 +51,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
     }
+
+
 
     private void Update()
     {
@@ -81,12 +85,13 @@ public class PlayerController : MonoBehaviour
         }
         if (telekinesisSkill != null)
         {
-            
+
             if (input.GrabPressed && telekinesisSkill != null)
             {
                 Debug.Log($"[PlayerController] Grab pressed, trying to grab with TelekinesisSkill: {telekinesisSkill}");
-                telekinesisSkill.TryGrab();
+                telekinesisSkill.ToggleGrab();
             }
+           
         }
     }
 

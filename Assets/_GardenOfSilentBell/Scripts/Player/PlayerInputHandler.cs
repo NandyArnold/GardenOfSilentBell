@@ -11,6 +11,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool SprintPressed { get; private set; }
     public bool GrabPressed { get; private set; }   
 
+
     private PlayerInput playerInput;
 
     public bool isActivePlayer = true;

@@ -11,6 +11,9 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < assignedSkills.Length; i++)
         {
             runtimeSkills[i] = assignedSkills[i].CreateSkillInstance(gameObject);
+
+            if (runtimeSkills[i].CanActivate())
+                runtimeSkills[i].Activate();
         }
     }
 

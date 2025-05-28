@@ -6,7 +6,7 @@ public class TelekinesisHandler : MonoBehaviour
     private Rigidbody2D grabbedRb;
     private TelekinesisSO skillData;
     private bool isTelekinesisActive = false;
-
+    public bool IsGrabbing => grabbedRb != null;
     public void Initialize(TelekinesisSO skillData)
     {
         this.skillData = skillData;
@@ -77,10 +77,12 @@ public class TelekinesisHandler : MonoBehaviour
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 playerPos = transform.position;
 
-        if (Vector2.Distance(playerPos, mouseWorldPos) <= skillData.interactionRange)
-        {
-            Vector2 direction = mouseWorldPos - grabbedRb.position;
-            grabbedRb.linearVelocity = direction * 10f;
-        }
+        Vector2 dir = (mouseWorldPos - playerPos).normalized;
+        float clampedDistance = Mathf.Min(Vector2.Distance(playerPos, mouseWorldPos), skillData.interactionRange);
+        Vector2 targetPos = playerPos + dir * clampedDistance;
+
+        Vector2 velocity = (targetPos - grabbedRb.position) * 10f;
+        grabbedRb.linearVelocity = velocity;
     }
+
 }

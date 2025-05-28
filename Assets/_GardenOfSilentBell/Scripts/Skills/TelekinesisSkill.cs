@@ -16,6 +16,7 @@ public class TelekinesisSkill : ISkill
         this.handler = character.GetComponent<TelekinesisHandler>();
 
         Debug.Log($"[TelekinesisSkill] Constructor called for character: {character.name}");
+        Debug.Log("[TelekinesisSkill] Handler is " + (handler == null ? "NULL" : "FOUND"));
 
         if (handler != null)
         {
@@ -52,5 +53,18 @@ public class TelekinesisSkill : ISkill
     {
         if (!isActive) return;
         handler?.TryRelease();
+    }
+
+    public void ToggleGrab()
+    {
+        if (!isActive) return;
+        if (handler.IsGrabbing)
+        {
+            TryRelease();
+        }
+        else
+        {
+            TryGrab();
+        }
     }
 }
