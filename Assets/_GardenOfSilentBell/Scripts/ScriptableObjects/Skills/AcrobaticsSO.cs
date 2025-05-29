@@ -7,5 +7,9 @@ public class AcrobaticsSO : SkillSO
     {
         return new AcrobaticsSkill(character, this);
     }
+    public override string Description()
+    {
+        return "Allows the user to climb on walls";
+    }
 }
 

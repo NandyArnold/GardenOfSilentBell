@@ -7,4 +7,8 @@ public class DeftHandsSO : SkillSO
     {
         return new DeftHandsSkill(character, this);
     }
+    public override string Description()
+    {
+        return "Allows the user to disarm traps and pick locks";
+    }
 }

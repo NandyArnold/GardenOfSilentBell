@@ -135,22 +135,7 @@ public class PlayerInputHandler : MonoBehaviour
         MovementInput = Vector2.zero; // Reset movement input to prevent unwanted movement during switch
         StartCoroutine(DeferredSwitch());
 
-        //if (CharacterManager.Instance == null)
-        //{
-        //    Debug.Break(); // Pause the game in Editor
-        //    Debug.LogError("[PlayerInputHandler] CharacterManager.Instance is null just before switching!");
-        //    return;
-        //}
-
-        //try
-        //{
-        //    Debug.Log("[PlayerInputHandler] Trying to switch character...");
-        //    CharacterManager.Instance.SwitchCharacter();
-        //}
-        //catch (System.Exception ex)
-        //{
-        //    Debug.LogError($"[PlayerInputHandler] Exception during character switch: {ex.Message}\n{ex.StackTrace}");
-        //}
+      
     }
 
     public void ResetInput()

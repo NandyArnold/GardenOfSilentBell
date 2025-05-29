@@ -7,4 +7,8 @@ public class SuperStrengthSkillSO : SkillSO
     {
         return new SuperStrengthSkill(character);
     }
+    public override string Description()
+    {
+        return "Allows the user to move around very heavy objects";
+    }
 }

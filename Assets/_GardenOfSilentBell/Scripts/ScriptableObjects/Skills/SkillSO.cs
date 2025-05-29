@@ -12,5 +12,8 @@ public abstract class SkillSO : ScriptableObject
     public GameObject aimPrefab; // Optional, used for aimed skills
 
     public abstract ISkill CreateSkillInstance(GameObject character);
+
+
+    public abstract string Description();
 }
 

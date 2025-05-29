@@ -10,4 +10,8 @@ public class TelekinesisSO : SkillSO
     {
         return new TelekinesisSkill(character, this);
     }
+    public override string Description()
+    {
+        return "Allows the user to move small objects around from a distance";
+    }
 }

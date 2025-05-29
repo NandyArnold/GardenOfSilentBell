@@ -10,6 +10,7 @@ public class SkillIconUI : MonoBehaviour
     public TMP_Text cooldownText;
     public TMP_Text chargeText;
     public TooltipTrigger tooltipTrigger;
+   
 
     public void Setup(SkillSO skill)
     {

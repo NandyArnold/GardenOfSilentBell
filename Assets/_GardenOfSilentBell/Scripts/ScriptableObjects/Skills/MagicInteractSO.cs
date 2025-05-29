@@ -9,4 +9,8 @@ public class MagicInteractSO : SkillSO
     {
         return new MagicInteractSkill(character, this);
     }
+    public override string Description()
+    {
+        return "Allows the user to interact with objects of magical nature from a great distance";
+    }
 }

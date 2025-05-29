@@ -3,6 +3,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.TextCore.Text;
+
 
 
 public class CharacterHUDManager : MonoBehaviour
@@ -13,26 +16,36 @@ public class CharacterHUDManager : MonoBehaviour
     [SerializeField] Transform skillContainer;
     [SerializeField] GameObject skillPrefab;
 
-    private Dictionary<string, CharacterPortraitUI> portraitLookup = new();
+    [SerializeField] CharacterPortraitData[] portraitDataArray;
+    private Dictionary<string, Sprite> portraitDataLookup = new();
+
+    //private Dictionary<string, CharacterPortraitUI> portraitLookup = new();
 
     void Start()
     {
+        foreach (var data in portraitDataArray)
+        {
+            if (!portraitDataLookup.ContainsKey(data.characterId))
+                portraitDataLookup[data.characterId] = data.portraitSprite;
+        }
+
         UpdateCharacterBar();
         UpdateSkillBar();
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
-        // Subscribe to switch character event
-        CharacterManager.Instance.OnCharacterSwitched += UpdateHUD;
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.OnCharacterSwitched += UpdateHUD;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        CharacterManager.Instance.OnCharacterSwitched -= UpdateHUD;
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.OnCharacterSwitched -= UpdateHUD;
     }
 
-    public void UpdateHUD()
+    public void UpdateHUD(GameObject newCharacter)
     {
         UpdateCharacterBar();
         UpdateSkillBar();
@@ -40,6 +53,7 @@ public class CharacterHUDManager : MonoBehaviour
 
     void UpdateCharacterBar()
     {
+
         foreach (Transform child in portraitContainer)
             Destroy(child.gameObject);
 
@@ -50,12 +64,27 @@ public class CharacterHUDManager : MonoBehaviour
 
             var go = Instantiate(portraitPrefab, portraitContainer);
             var portrait = go.GetComponent<CharacterPortraitUI>();
-            portrait.Setup(character.characterPrefab.GetComponent<SpriteRenderer>().sprite,
-                           character.id, character.id,
-                           character.instance == CharacterManager.Instance.activeCharacter);
+            var portraitSprite = portraitDataLookup.TryGetValue(character.id, out var sprite)
+                     ? sprite
+                     : sprite; // fallback if needed
 
-            portraitLookup[character.id] = portrait;
+            portrait.Setup(portraitSprite, character.id, OnPortraitClicked);
+
         }
+        //foreach (Transform child in portraitContainer)
+        //    Destroy(child.gameObject);
+
+        //var chars = CharacterManager.Instance.Characters;
+        //foreach (var character in chars)
+        //{
+        //    if (!character.isUnlocked) continue;
+
+        //    var go = Instantiate(portraitPrefab, portraitContainer);
+        //    var portrait = go.GetComponent<CharacterPortraitUI>();
+        //    portrait.Setup(character.portraitSprite,character.id, OnPortraitClicked);
+
+        //    portraitLookup[character.id] = portrait;
+        //}
     }
 
     void UpdateSkillBar()
@@ -76,5 +105,15 @@ public class CharacterHUDManager : MonoBehaviour
             icon.Setup(skill);
         }
     }
+        private void OnPortraitClicked(string id)
+    {
+        var data = CharacterManager.Instance.GetCharacterById(id);
+        if (data == null) return;
+
+        var index = CharacterManager.Instance.Characters.ToList().FindIndex(c => c.id == id);
+        if (index >= 0)
+            CharacterManager.Instance.SetActiveCharacter(index);
+    }
 }
+
 

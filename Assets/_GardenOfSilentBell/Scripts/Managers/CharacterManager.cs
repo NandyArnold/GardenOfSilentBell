@@ -2,16 +2,20 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance { get; private set; }
+
+    public event Action<GameObject> OnCharacterSwitched;
 
     [System.Serializable]
     public class CharacterData
     {
         public string id;                     // Unique ID (e.g. "mage", "knight")
         public GameObject characterPrefab;             // Reference to the .characterPrefab (not in scene!)
+        public Sprite portraitSprite;               // Portrait image for UI
         [HideInInspector] public GameObject instance; // Instantiated runtime object
         public bool isUnlocked;
         public Vector2 lastPosition;
@@ -38,7 +42,7 @@ public class CharacterManager : MonoBehaviour
         }
 
         Instance = this;
-       
+
     }
 
     private void Start()
@@ -187,6 +191,8 @@ public class CharacterManager : MonoBehaviour
         activeCharacterIndex = index;
         activeCharacter = selected.instance;
 
+        OnCharacterSwitched?.Invoke(activeCharacter);
+
         var newCompanion = selected.instance.GetComponent<CompanionFollow>();
         if (newCompanion != null)
         {
@@ -271,7 +277,7 @@ public class CharacterManager : MonoBehaviour
                 Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
                 GameObject instance = SpawnManager.Instance.SpawnCharacterById(data.id, spawnPos);
                 data.instance = instance;
-              
+
             }
         }
 
@@ -292,5 +298,12 @@ public class CharacterManager : MonoBehaviour
 
         var data = characters.Find(c => c.instance == activeCharacter);
         return data != null ? data.id : null;
+    }
+
+    public void SetActiveCharacterById(string id)
+    {
+        var index = characters.FindIndex(c => c.id == id);
+        if (index >= 0)
+            SetActiveCharacter(index);
     }
 }

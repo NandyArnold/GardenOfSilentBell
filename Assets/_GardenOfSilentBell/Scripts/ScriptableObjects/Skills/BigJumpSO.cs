@@ -7,4 +7,8 @@ public class BigJumpSkillSO : SkillSO
     {
         return new BigJumpSkill(character);
     }
+    public override string Description()
+    {
+        return "Allows the user to performe a big jump to overcome high gaps";
+    }
 }
