@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private SpriteFlipper spriteFlipper;
     private TelekinesisHandler telekinesisHandler;
     private MagicInteractHandler magicInteractHandler;
-
+    private BigJumpHandler bigJumpHandler;
 
     private TelekinesisSkill telekinesisSkill;
 
@@ -74,8 +74,14 @@ public class PlayerController : MonoBehaviour
         }
 
         if (!interaction.IsPushing && input.JumpPressed)
-            movement.Jump();
-
+            if (bigJumpHandler != null)
+            {
+                bigJumpHandler.DoBigJump();
+            }
+            else
+            {
+                movement.Jump();
+            }
         if(magicInteractHandler != null)
             magicInteractHandler.HighlightMagicTarget(); // Always show glow when near something
 

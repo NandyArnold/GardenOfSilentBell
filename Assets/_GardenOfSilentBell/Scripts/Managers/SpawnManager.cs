@@ -97,7 +97,19 @@ public void RefreshSpawnPoints()
     private Vector2? GetSpawnPointForCharacter(string id)
     {
         var point = spawnPoints.Find(p => p.characterId == id);
-        return point?.spawnTransform?.position;
+        if (point == null)
+        {
+            Debug.LogWarning($"[SpawnManager] No SpawnPoint entry found for characterId: '{id}'.");
+            return null;
+        }
+
+        if (point.spawnTransform == null)
+        {
+            Debug.LogWarning($"[SpawnManager] SpawnPoint for characterId: '{id}' has null spawnTransform.");
+            return null;
+        }
+
+        return point.spawnTransform.position;
     }
 
     public GameObject SpawnPrefab(GameObject prefab, Vector2 position)

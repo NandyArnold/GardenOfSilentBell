@@ -5,6 +5,7 @@ public class PushableObject : MonoBehaviour, IInteractable
 {
     private Rigidbody2D rb;
     public bool IsBeingPushed { get; private set; }
+    public bool IsHeavy => gameObject.CompareTag("Heavy");
 
     //public float pushSpeed = 2f;
 

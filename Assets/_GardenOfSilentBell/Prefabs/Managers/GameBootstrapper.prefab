@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1533053951860496700
 Transform:
   m_ObjectHideFlags: 0
@@ -122,7 +122,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
       propertyPath: spawnPoints.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
       propertyPath: spawnPoints.Array.data[0].characterId
@@ -131,6 +131,10 @@ PrefabInstance:
     - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
       propertyPath: spawnPoints.Array.data[1].characterId
       value: TertiaryTestCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 769563471897059978, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
+      propertyPath: spawnPoints.Array.data[2].characterId
+      value: StartingCharacter
       objectReference: {fileID: 0}
     - target: {fileID: 6121844705109860899, guid: a41def7cd6df9564c8c1755fae8aac01, type: 3}
       propertyPath: m_LocalPosition.x

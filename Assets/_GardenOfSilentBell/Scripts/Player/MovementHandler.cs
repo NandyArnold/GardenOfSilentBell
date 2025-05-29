@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementHandler : MonoBehaviour
@@ -13,7 +14,8 @@ public class MovementHandler : MonoBehaviour
     public LayerMask groundLayer;
 
     [Header("Pushing")]
-    public float pushMoveSpeed;
+    public float normalPushSpeed;
+    public FloatRangeParameter heavyPushSpeed;
     //private float pushForce = 5f;
 
     [Header("Sprinting")]
@@ -57,7 +59,7 @@ public class MovementHandler : MonoBehaviour
     public void ProcessMove(Vector2 input, bool isPushing = false, bool isSprinting = false)
     {
         //Debug.Log($"[MovementHandler] moveSpeed: {moveSpeed}, pushMoveSpeed: {pushMoveSpeed}");
-        float speed = isPushing ? pushMoveSpeed : (isSprinting ? sprintSpeed : moveSpeed);
+        float speed = isPushing ? normalPushSpeed : (isSprinting ? sprintSpeed : moveSpeed);
         //Debug.Log($"[MovementHandler] isPushing: {isPushing}, Using speed: {speed}");
 
         float targetSpeed = input.x * speed;

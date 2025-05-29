@@ -6,6 +6,7 @@ TagManager:
   tags:
   - StartSpawnPoint
   - ReturnSpawnPoint
+  - Heavy
   layers:
   - Default
   - TransparentFX

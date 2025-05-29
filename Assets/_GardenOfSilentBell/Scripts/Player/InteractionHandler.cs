@@ -38,11 +38,23 @@ public class InteractionHandler : MonoBehaviour
 
     public void TryPushPull(PushableObject target)
     {
+        // Check if the object is tagged "Heavy"
+        if (target.CompareTag("Heavy"))
+        {
+            var heavyHandler = GetComponent<HeavyPushHandler>();
+            if (heavyHandler == null)
+            {
+                Debug.LogWarning($"{gameObject.name} cannot push heavy object '{target.name}' — missing HeavyPushHandler.");
+                return;
+            }
+        }
+
+        // Toggle push state
         if (IsPushing)
         {
             if (currentPushTarget != null)
             {
-                currentPushTarget.SetBeingPushed(false); //  Revert to Kinematic
+                currentPushTarget.SetBeingPushed(false); // Revert to Kinematic
             }
 
             currentPushTarget = null;
@@ -53,7 +65,7 @@ public class InteractionHandler : MonoBehaviour
         {
             currentPushTarget = target;
             IsPushing = true;
-            currentPushTarget.SetBeingPushed(true); //  Activate pushing mode
+            currentPushTarget.SetBeingPushed(true); // Activate pushing mode
             Debug.Log("Started pushing: " + target.name);
         }
     }
