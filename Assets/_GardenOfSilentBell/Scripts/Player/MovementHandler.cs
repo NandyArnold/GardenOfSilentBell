@@ -1,5 +1,6 @@
+using System.Net;
 using UnityEngine;
-using UnityEngine.Rendering;
+
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementHandler : MonoBehaviour
@@ -15,7 +16,7 @@ public class MovementHandler : MonoBehaviour
 
     [Header("Pushing")]
     public float normalPushSpeed;
-    public FloatRangeParameter heavyPushSpeed;
+    public float heavyPushSpeed;
     //private float pushForce = 5f;
 
     [Header("Sprinting")]
@@ -26,6 +27,8 @@ public class MovementHandler : MonoBehaviour
     private PlayerInputHandler inputHandler;
     private SpriteFlipper spriteFlipper;
     private InteractionHandler interactionHandler;
+    private BigJumpHandler bigJumpHandler;
+    private HeavyPushHandler heavyPushHandler;
 
     private void Awake()
     {
@@ -33,31 +36,30 @@ public class MovementHandler : MonoBehaviour
         spriteFlipper = GetComponent<SpriteFlipper>();
         inputHandler = GetComponent<PlayerInputHandler>();
         interactionHandler = GetComponent<InteractionHandler>();
+        bigJumpHandler = GetComponent<BigJumpHandler>();
+        heavyPushHandler = GetComponent<HeavyPushHandler>();
         if (spriteFlipper == null)
         {
             Debug.LogError("spriteFlipper is null!");
         }
     }
 
-    //private void Update()
-    //{
-    //    if (inputHandler.InteractPressed)
-    //    {
-    //        interactionHandler.TryInteract();
-    //    }
-    //}
-    //void FixedUpdate()
-    //{
-    //    float move = inputHandler.MovementInput.x;
-    //    rb.linearVelocity = new Vector2(move * moveSpeed, rb.linearVelocity.y);
-
-    //    spriteFlipper?.Flip(move);
-    //    //Debug.Log($"FixedUpdate move input: {move}");
-    //}
 
 
     public void ProcessMove(Vector2 input, bool isPushing = false, bool isSprinting = false)
     {
+        if (interactionHandler.CurrentPushTarget != null &&
+      interactionHandler.CurrentPushTarget.CompareTag("Heavy") &&
+      heavyPushHandler != null)
+        {
+            normalPushSpeed = heavyPushSpeed;
+        }
+        else
+        {
+           
+            //Debug.Log("[MovementHandler] Using normal push speed");
+        }
+
         //Debug.Log($"[MovementHandler] moveSpeed: {moveSpeed}, pushMoveSpeed: {pushMoveSpeed}");
         float speed = isPushing ? normalPushSpeed : (isSprinting ? sprintSpeed : moveSpeed);
         //Debug.Log($"[MovementHandler] isPushing: {isPushing}, Using speed: {speed}");
@@ -68,31 +70,37 @@ public class MovementHandler : MonoBehaviour
 
         if (isPushing && interactionHandler.CurrentPushTarget != null)
         {
-             
+
             // Only push if there is horizontal input
-             if (Mathf.Abs(input.x) > 0.01f)
-             {
+            if (Mathf.Abs(input.x) > 0.01f)
+            {
                 Vector2 pushDirection = new Vector2(input.x, 0f).normalized;
                 // Use the same speed as the player
                 interactionHandler.CurrentPushTarget.Push(new Vector2(input.x, 0f), speed);
 
                 //interactionHandler.CurrentPushTarget.Push(pushDirection, Mathf.Abs(speed));
-             }
+            }
             else
             {
-             // Stop the pushable object if no input
-             interactionHandler.CurrentPushTarget.Push(Vector2.zero, 0f);
-             }
+                // Stop the pushable object if no input
+                interactionHandler.CurrentPushTarget.Push(Vector2.zero, 0f);
+            }
         }
     }
-    
+
 
     public void Jump()
     {
-        if (isGrounded)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // Prevent double jump
+        if (isGrounded) { 
+            if (bigJumpHandler != null)
+                {
+                    bigJumpHandler.DoBigJump();
+                }
+            else
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                isGrounded = false; // Prevent double jump
+            }
         }
     }
 

@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private SpriteFlipper spriteFlipper;
     private TelekinesisHandler telekinesisHandler;
     private MagicInteractHandler magicInteractHandler;
-    private BigJumpHandler bigJumpHandler;
+  
 
     private TelekinesisSkill telekinesisSkill;
 
@@ -74,11 +74,6 @@ public class PlayerController : MonoBehaviour
         }
 
         if (!interaction.IsPushing && input.JumpPressed)
-            if (bigJumpHandler != null)
-            {
-                bigJumpHandler.DoBigJump();
-            }
-            else
             {
                 movement.Jump();
             }
@@ -118,7 +113,7 @@ public class PlayerController : MonoBehaviour
         if (interaction.IsPushing && interaction.CurrentPushTarget != null)
         {
             interaction.CurrentPushTarget.SetBeingPushed(true);
-            interaction.CurrentPushTarget.Push(input.MovementInput, movement.pushMoveSpeed);
+            interaction.CurrentPushTarget.Push(input.MovementInput, movement.normalPushSpeed);
         }
 
 

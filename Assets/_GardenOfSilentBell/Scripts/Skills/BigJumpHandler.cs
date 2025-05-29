@@ -18,6 +18,7 @@ public class BigJumpHandler : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, extraJumpForce);
             Debug.Log($"{gameObject.name} did a BIG jump!");
+
         }
     }
 

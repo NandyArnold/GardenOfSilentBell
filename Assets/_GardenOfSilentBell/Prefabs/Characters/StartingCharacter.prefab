@@ -223,7 +223,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
-  pushMoveSpeed: 2.5
+  normalPushSpeed: 3
+  heavyPushSpeed: 0
   sprintSpeed: 15
 --- !u!114 &780079320116669071
 MonoBehaviour:

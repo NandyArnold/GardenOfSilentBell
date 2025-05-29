@@ -223,7 +223,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
-  pushMoveSpeed: 2.5
+  normalPushSpeed: 3
+  heavyPushSpeed: 1
   sprintSpeed: 8
 --- !u!114 &6499787613286567578
 MonoBehaviour:
@@ -375,7 +376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6213cd7aa2d6fe44a6e1e769634ff6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraJumpForce: 15
+  extraJumpForce: 10
 --- !u!114 &-3249671027189850036
 MonoBehaviour:
   m_ObjectHideFlags: 0
