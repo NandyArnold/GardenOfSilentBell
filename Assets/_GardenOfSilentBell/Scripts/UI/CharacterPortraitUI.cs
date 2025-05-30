@@ -9,6 +9,11 @@ public class CharacterPortraitUI : MonoBehaviour
 
     public void Setup(Sprite portrait, string id, System.Action<string> onClickCallback)
     {
+        if (portraitImage == null || selectButton == null)
+        {
+            Debug.LogError("[CharacterPortraitUI] Missing references in inspector!");
+            return;
+        }
         characterId = id;
         portraitImage.sprite = portrait;
         selectButton.onClick.RemoveAllListeners(); // important if reusing

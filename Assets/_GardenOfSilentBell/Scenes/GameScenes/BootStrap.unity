@@ -211,24 +211,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3366765717898142424, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
-      propertyPath: spawnPoints.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3366765717898142424, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
-      propertyPath: spawnPoints.Array.data[1].characterId
-      value: TertiaryTestCharacter
-      objectReference: {fileID: 0}
     - target: {fileID: 4059912208265042386, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
       propertyPath: m_Name
       value: GameBootstrapper
       objectReference: {fileID: 0}
-    - target: {fileID: 4059912208265042386, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8882012118892644832, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e060e6ea1b63c7f4da664b97c0efd6f6, type: 3}

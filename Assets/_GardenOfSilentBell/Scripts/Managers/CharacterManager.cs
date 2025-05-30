@@ -54,24 +54,6 @@ public class CharacterManager : MonoBehaviour
         }       // or whatever ID you use
 
 
-        //foreach (var data in characters)
-        //{
-        //    //if (data.isUnlocked)
-        //    //{
-        //    //    Vector2 spawnPos = data.lastPosition != Vector2.zero ? data.lastPosition : Vector2.zero;
-        //    //    data.instance = Instantiate(data.characterPrefab, spawnPos, Quaternion.identity);
-        //    //    data.instance.name = data.id;
-        //    //    data.instance.SetActive(true);
-
-        //    //    var input = data.instance.GetComponent<PlayerInput>();
-        //    //    if (input != null)
-        //    //    {
-        //    //        input.DeactivateInput();
-        //    //        input.enabled = false;
-        //    //    }
-        //    //}
-        //}
-
         // Set active character if one is unlocked
         for (int i = 0; i < characters.Count; i++)
         {
