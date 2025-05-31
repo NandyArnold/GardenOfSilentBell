@@ -27,4 +27,12 @@ public class CameraFollow : MonoBehaviour
             vCam.Follow = target;
         }
     }
+    public void JumpFollow(Transform target)
+    {
+        if (vCam != null)
+        {
+            vCam.Follow = target;
+            
+        }
+    }
 }

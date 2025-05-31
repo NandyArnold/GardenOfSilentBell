@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TelekinesisSkill
   m_EditorClassIdentifier: 
   skillName: Telekinesis
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c5afecea225e5824cb741252a41784d9, type: 3}
   skillType: 0
   charges: 0
   cooldown: 0

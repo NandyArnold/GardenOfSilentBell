@@ -13,7 +13,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        TooltipUI.Instance?.Show(content, transform.position);
+        TooltipUI.Instance?.Show(content);
     }
 
     public void OnPointerExit(PointerEventData eventData)

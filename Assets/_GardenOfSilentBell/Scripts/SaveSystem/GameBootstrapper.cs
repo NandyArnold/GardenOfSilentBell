@@ -135,6 +135,13 @@ public class GameBootstrapper : MonoBehaviour
                 Debug.LogWarning($"[SaveManager] No save data found for character '{charData.id}'.");
             }
         }
+
+        if (CharacterHUDManager.Instance != null)
+        {
+            Debug.Log("[GameBootstrapper] Refreshing CharacterHUDManager UI after scene change.");
+            CharacterHUDManager.Instance.UpdateCharacterBar();
+        }
+
     }
 
     private void InitializeCharactersInScene()

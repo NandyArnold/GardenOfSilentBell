@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MagicInteractSkill
   m_EditorClassIdentifier: 
   skillName: Magic Touch
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 370dfee2b4a08ff4b9f94e8713622f66, type: 3}
   skillType: 0
   charges: 0
   cooldown: 0

@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections;
+using UnityEngine.TextCore.Text;
+using UnityEngine.SceneManagement;
 
 
 
@@ -13,7 +15,20 @@ public class CharacterHUDManager : MonoBehaviour
     [SerializeField] Transform skillContainer;
     [SerializeField] GameObject skillPrefab;
 
+    public static CharacterHUDManager Instance;
 
+
+
+private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        Debug.Log("[HUD] CharacterHUDManager Instance created.");
+    }
     void Start()
     {
         Debug.Log("[HUD] portraitPrefab at Start: " + (portraitPrefab != null ? portraitPrefab.name : "NULL"));
@@ -26,6 +41,7 @@ public class CharacterHUDManager : MonoBehaviour
 
     private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (CharacterManager.Instance != null)
             CharacterManager.Instance.OnCharacterSwitched += (go) => StartCoroutine(DeferredUpdateHUD(go));
 
@@ -38,20 +54,40 @@ public class CharacterHUDManager : MonoBehaviour
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         if (CharacterManager.Instance != null)
             CharacterManager.Instance.OnCharacterSwitched -= UpdateHUD;
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(DelayedUpdateCharacterBar());
+    }
+
 
     public void UpdateHUD(GameObject newCharacter)
     {
         Debug.Log("[HUD] CharacterHUDManager Start called");
 
         UpdateCharacterBar();
-        Debug.Log($"[HUD] Updating HUD with character: {newCharacter?.name}");
+
+        if (newCharacter == null)
+        {
+            Debug.LogWarning("[HUD] newCharacter is null or destroyed in UpdateHUD.");
+            return;
+        }
+
+        if (!newCharacter) // This catches destroyed objects in Unity
+        {
+            Debug.LogWarning("[HUD] newCharacter has been destroyed.");
+            return;
+        }
+
+        Debug.Log($"[HUD] Updating HUD with character: {newCharacter.name}");
         UpdateSkillBar();
     }
 
-    void UpdateCharacterBar()
+    public void UpdateCharacterBar()
     {
         if (portraitPrefab == null)
         {
@@ -59,9 +95,11 @@ public class CharacterHUDManager : MonoBehaviour
             return;
         }
         foreach (Transform child in portraitContainer)
+
             Destroy(child.gameObject);
 
         var chars = CharacterManager.Instance.Characters;
+        string activeId = CharacterManager.Instance.GetCharacterById(CharacterManager.Instance.activeCharacter.name)?.id;
         foreach (var character in chars)
         {
             if (!character.isUnlocked) continue;
@@ -93,8 +131,11 @@ public class CharacterHUDManager : MonoBehaviour
 
             Debug.Log($"[HUD] Setting portrait for {character.id} with sprite: {portraitData.portraitSprite.name}");
 
-            
-            portrait.Setup(portraitSprite, character.id, OnPortraitClicked);
+
+            //bool isActive = CharacterManager.Instance.activeCharacter != null &&
+            //    CharacterManager.Instance.GetCharacterById(CharacterManager.Instance.activeCharacter.name)?.id == character.id;
+            bool isActive = character.id == activeId;
+            portrait.Setup(portraitSprite, character.id, OnPortraitClicked,isActive);
 
             portrait.portraitImage.enabled = true;
             portrait.selectButton.interactable = true;
@@ -104,6 +145,8 @@ public class CharacterHUDManager : MonoBehaviour
 
             var imageComponents = portrait.GetComponentsInChildren<UnityEngine.UI.Image>(true);
             foreach (var img in imageComponents) img.enabled = true;
+
+          
 
         }
     }
@@ -132,15 +175,20 @@ public class CharacterHUDManager : MonoBehaviour
             icon.Setup(skill);
         }
     }
-        private void OnPortraitClicked(string id)
+
+
+    private void OnPortraitClicked(string id)
     {
         var data = CharacterManager.Instance.GetCharacterById(id);
         if (data == null) return;
 
         var index = CharacterManager.Instance.Characters.ToList().FindIndex(c => c.id == id);
         if (index >= 0)
-            CharacterManager.Instance.SetActiveCharacter(index);
+        Debug.Log($"[HUD] Portrait clicked for character: {id}");
+        CharacterManager.Instance.SetActiveCharacter(index);
     }
+
+
     IEnumerator DelayedUpdateCharacterBar()
     {
         if (portraitPrefab == null)

@@ -17,11 +17,11 @@ public class TooltipUI : MonoBehaviour
         Hide();
     }
 
-    public void Show(string text, Vector3 position)
+    public void Show(string text)//, Vector3 position)
     {
         tooltipText.text = text;
         tooltipRoot.SetActive(true);
-        rectTransform.position = position + new Vector3(10, -10); // slight offset
+        //rectTransform.position = position + new Vector3(10, -10); // slight offset
     }
 
     public void Hide()
