@@ -65,7 +65,7 @@ GameObject:
   - component: {fileID: 7706264612339633298}
   - component: {fileID: 2550426574546781414}
   - component: {fileID: 769148582508823316}
-  - component: {fileID: -6285696565234459817}
+  - component: {fileID: 453344560529254506}
   - component: {fileID: 8943327431949796620}
   - component: {fileID: -4318592177766593376}
   m_Layer: 0
@@ -411,7 +411,7 @@ MonoBehaviour:
   autoFollowOnMeet: 0
   hasMetUp: 1
   followTargetId: 
---- !u!114 &-6285696565234459817
+--- !u!114 &453344560529254506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

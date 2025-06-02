@@ -7,7 +7,7 @@ public class DeftHandsSkill : ISkill
     public DeftHandsSkill(GameObject character, DeftHandsSO data)
     {
         this.character = character;
-        var disarmer = character.GetComponent<TrapDisarmHandler>();
+        var disarmer = character.GetComponent<DeftHandsHandler>();
         if (disarmer != null) disarmer.enabled = true;
     }
 
