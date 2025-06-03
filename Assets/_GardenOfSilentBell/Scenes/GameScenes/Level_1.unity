@@ -1635,7 +1635,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &636173323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3717,6 +3717,7 @@ GameObject:
   - component: {fileID: 994436899}
   - component: {fileID: 994436898}
   - component: {fileID: 994436900}
+  - component: {fileID: 994436901}
   m_Layer: 9
   m_Name: torch_R
   m_TagString: Untagged
@@ -3828,6 +3829,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102a083a36ad9124687c72f83b520b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &994436901
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994436896}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.15999998
 --- !u!1 &1013982754
 GameObject:
   m_ObjectHideFlags: 0
@@ -3845,7 +3882,7 @@ GameObject:
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1013982755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3931,6 +3968,7 @@ GameObject:
   - component: {fileID: 1077116702}
   - component: {fileID: 1077116701}
   - component: {fileID: 1077116703}
+  - component: {fileID: 1077116704}
   m_Layer: 9
   m_Name: torch_L
   m_TagString: Untagged
@@ -4042,6 +4080,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102a083a36ad9124687c72f83b520b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &1077116704
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077116699}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.00000011920929, y: 0}
+  m_Radius: 0.15999998
 --- !u!1001 &1123750518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4068,7 +4142,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4076,7 +4150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4116,11 +4190,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6529878109269388661, guid: 529bf54b56c767a44b912995f52eb835, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7232,7 +7306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_AnchorMin.x
@@ -7240,7 +7314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_SizeDelta.x
@@ -7280,11 +7354,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6987259586199414946, guid: 415979400576e6c48a867a1061b4cf0a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
