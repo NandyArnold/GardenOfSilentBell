@@ -5,7 +5,16 @@ public class Lockpick : MonoBehaviour, IInteractable
 {
     public void Interact()
     {
-        GameObject interactor = Object.FindFirstObjectByType<InteractionHandler>()?.gameObject;
+        var interactors = FindObjectsByType<InteractionHandler>(FindObjectsSortMode.None);
+        GameObject interactor = null;
+        foreach (InteractionHandler handler in interactors)
+        {
+            if(handler.gameObject.name == "StartingCharacter")
+            {
+                interactor = handler.gameObject;
+                break;
+            }
+        }
 
         if (interactor != null && interactor.GetComponent<DeftHandsHandler>() != null)
         {
