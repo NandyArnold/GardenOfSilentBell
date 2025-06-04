@@ -28,42 +28,40 @@ private void Awake()
         }
         Instance = this;
         Debug.Log("[HUD] CharacterHUDManager Instance created.");
-    }
-    void Start()
-    {
-        Debug.Log("[HUD] portraitPrefab at Start: " + (portraitPrefab != null ? portraitPrefab.name : "NULL"));
-
-        StartCoroutine(DelayedUpdateCharacterBar());
-
-        //UpdateCharacterBar();
-        UpdateSkillBar();
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         if (CharacterManager.Instance != null)
-            CharacterManager.Instance.OnCharacterSwitched += (go) => StartCoroutine(DeferredUpdateHUD(go));
-
+        {
+            CharacterManager.Instance.OnCharacterSwitched += HandleCharacterSwitched;
+        }
         else
         {
-            Debug.LogWarning("[HUD] CharacterManager.Instance is null in OnEnable. Waiting for it to initialize.");
-            //StartCoroutine(WaitForCharacterManager());
+            Debug.LogWarning("[HUD] CharacterManager.Instance is null in Awake. Will retry in Start.");
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
         if (CharacterManager.Instance != null)
-            CharacterManager.Instance.OnCharacterSwitched -= UpdateHUD;
+        {
+            CharacterManager.Instance.OnCharacterSwitched -= HandleCharacterSwitched;
+        }
     }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    void Start()
     {
-        StartCoroutine(DelayedUpdateCharacterBar());
-    }
+        if (CharacterManager.Instance != null)
+        {
+            CharacterManager.Instance.OnCharacterSwitched -= HandleCharacterSwitched; // Avoid double hookup
+            CharacterManager.Instance.OnCharacterSwitched += HandleCharacterSwitched;
+        }
+        else
+        {
+            Debug.LogError("[HUD] CharacterManager.Instance is STILL null in Start.");
+        }
 
+        Debug.Log("[HUD] portraitPrefab at Start: " + (portraitPrefab != null ? portraitPrefab.name : "NULL"));
+
+        StartCoroutine(DelayedUpdateCharacterBar());
+        UpdateSkillBar();
+    }
 
     public void UpdateHUD(GameObject newCharacter)
     {
@@ -89,6 +87,12 @@ private void Awake()
 
     public void UpdateCharacterBar()
     {
+        var cm = CharacterManager.Instance;
+        if (cm == null || cm.Characters == null || cm.Characters.Count == 0)
+        {
+            Debug.LogWarning("[HUD] CharacterManager or Characters not initialized yet.");
+            return;
+        }
         if (portraitPrefab == null)
         {
             Debug.LogError("[HUD] portraitPrefab is null. Did it get destroyed?");
@@ -102,6 +106,12 @@ private void Awake()
         string activeId = CharacterManager.Instance.GetCharacterById(CharacterManager.Instance.activeCharacter.name)?.id;
         foreach (var character in chars)
         {
+           
+            if (cm == null || cm.Characters == null || cm.Characters.Count == 0)
+            {
+                Debug.LogWarning("[HUD] CharacterManager not ready.");
+                return;
+            }
             if (!character.isUnlocked) continue;
 
             if (portraitPrefab == null)
@@ -152,7 +162,7 @@ private void Awake()
     }
 
 
-    void UpdateSkillBar()
+    public void UpdateSkillBar()
     {
         if (skillPrefab == null)
         {
@@ -207,6 +217,24 @@ private void Awake()
     {
         yield return null; // wait one frame
         UpdateHUD(go);
+    }
+
+    public void InitHUD()
+    {
+        Debug.Log("[HUD] Initializing CharacterHUDManager");
+        if (portraitPrefab == null)
+        {
+            Debug.LogError("[HUD] portraitPrefab is not assigned in InitHUD.");
+            return;
+        }
+        UpdateCharacterBar();
+        UpdateSkillBar();
+    }
+
+    private void HandleCharacterSwitched(GameObject newCharacter)
+    {
+        Debug.Log("[HUD] Handling character switch event.");
+        UpdateHUD(newCharacter);
     }
 }
 

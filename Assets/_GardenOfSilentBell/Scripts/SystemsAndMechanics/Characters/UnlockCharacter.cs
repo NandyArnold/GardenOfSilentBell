@@ -32,6 +32,7 @@ public class UnlockCharacter : MonoBehaviour
                             controller.isUnlocked = true;
                         }
                     }
+                 
                     CharacterManager.Instance.EnableSwitching();
                     if (switchToUnlockedCharacter)
                     {
@@ -42,6 +43,8 @@ public class UnlockCharacter : MonoBehaviour
                     {
                         FollowManager.Instance?.AssignFollowTargets();
                     }
+                    CharacterHUDManager.Instance?.UpdateCharacterBar();
+                    CharacterHUDManager.Instance?.UpdateHUD(CharacterManager.Instance.activeCharacter);
                     SaveManager.Instance?.SaveGame(); // Save immediately after unlocking
                     return true;
                 }

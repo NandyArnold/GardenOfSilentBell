@@ -138,8 +138,8 @@ public class GameBootstrapper : MonoBehaviour
 
         if (CharacterHUDManager.Instance != null)
         {
-            Debug.Log("[GameBootstrapper] Refreshing CharacterHUDManager UI after scene change.");
-            CharacterHUDManager.Instance.UpdateCharacterBar();
+            Debug.Log("[GameBootstrapper] Triggering CharacterHUDManager InitHUD after full initialization.");
+            CharacterHUDManager.Instance.InitHUD(); 
         }
 
     }
