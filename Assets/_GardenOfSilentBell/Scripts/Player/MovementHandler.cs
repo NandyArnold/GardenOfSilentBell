@@ -13,6 +13,7 @@ public class MovementHandler : MonoBehaviour
 
     [Header("Ground Detection")]
     public LayerMask groundLayer;
+    public LayerMask interactableLayer;
 
     [Header("Pushing")]
     public float normalPushSpeed;
@@ -23,7 +24,8 @@ public class MovementHandler : MonoBehaviour
     public float sprintSpeed = 8f;
 
     private Rigidbody2D rb;
-    private bool isGrounded;
+    [HideInInspector]
+    public bool isGrounded { get; private set; }
     private PlayerInputHandler inputHandler;
     private SpriteFlipper spriteFlipper;
     private InteractionHandler interactionHandler;
@@ -133,6 +135,6 @@ public class MovementHandler : MonoBehaviour
 
     private bool IsGroundLayer(GameObject obj)
     {
-        return groundLayer == (groundLayer | (1 << obj.layer));
+        return groundLayer == (groundLayer | (1 << obj.layer)) || interactableLayer == (interactableLayer | (1 << obj.layer));
     }
 }

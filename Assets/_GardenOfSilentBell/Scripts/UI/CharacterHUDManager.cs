@@ -27,7 +27,7 @@ private void Awake()
             return;
         }
         Instance = this;
-        Debug.Log("[HUD] CharacterHUDManager Instance created.");
+        //Debug.Log("[HUD] CharacterHUDManager Instance created.");
         if (CharacterManager.Instance != null)
         {
             CharacterManager.Instance.OnCharacterSwitched += HandleCharacterSwitched;
@@ -57,7 +57,7 @@ private void Awake()
             Debug.LogError("[HUD] CharacterManager.Instance is STILL null in Start.");
         }
 
-        Debug.Log("[HUD] portraitPrefab at Start: " + (portraitPrefab != null ? portraitPrefab.name : "NULL"));
+        //Debug.Log("[HUD] portraitPrefab at Start: " + (portraitPrefab != null ? portraitPrefab.name : "NULL"));
 
         StartCoroutine(DelayedUpdateCharacterBar());
         UpdateSkillBar();
@@ -65,23 +65,23 @@ private void Awake()
 
     public void UpdateHUD(GameObject newCharacter)
     {
-        Debug.Log("[HUD] CharacterHUDManager Start called");
+        //Debug.Log("[HUD] CharacterHUDManager Start called");
 
         UpdateCharacterBar();
 
         if (newCharacter == null)
         {
-            Debug.LogWarning("[HUD] newCharacter is null or destroyed in UpdateHUD.");
+            //Debug.LogWarning("[HUD] newCharacter is null or destroyed in UpdateHUD.");
             return;
         }
 
         if (!newCharacter) // This catches destroyed objects in Unity
         {
-            Debug.LogWarning("[HUD] newCharacter has been destroyed.");
+            //Debug.LogWarning("[HUD] newCharacter has been destroyed.");
             return;
         }
 
-        Debug.Log($"[HUD] Updating HUD with character: {newCharacter.name}");
+        //Debug.Log($"[HUD] Updating HUD with character: {newCharacter.name}");
         UpdateSkillBar();
     }
 
@@ -90,12 +90,12 @@ private void Awake()
         var cm = CharacterManager.Instance;
         if (cm == null || cm.Characters == null || cm.Characters.Count == 0)
         {
-            Debug.LogWarning("[HUD] CharacterManager or Characters not initialized yet.");
+            //Debug.LogWarning("[HUD] CharacterManager or Characters not initialized yet.");
             return;
         }
         if (portraitPrefab == null)
         {
-            Debug.LogError("[HUD] portraitPrefab is null. Did it get destroyed?");
+            //Debug.LogError("[HUD] portraitPrefab is null. Did it get destroyed?");
             return;
         }
         foreach (Transform child in portraitContainer)
@@ -109,19 +109,19 @@ private void Awake()
            
             if (cm == null || cm.Characters == null || cm.Characters.Count == 0)
             {
-                Debug.LogWarning("[HUD] CharacterManager not ready.");
+                //Debug.LogWarning("[HUD] CharacterManager not ready.");
                 return;
             }
             if (!character.isUnlocked) continue;
 
             if (portraitPrefab == null)
             {
-                Debug.LogError("[HUD] portraitPrefab is null. Cannot instantiate portrait.");
+                //Debug.LogError("[HUD] portraitPrefab is null. Cannot instantiate portrait.");
                 return;
             }
 
             var go = Instantiate(portraitPrefab, portraitContainer);
-            Debug.Log($"[HUD] Instantiated portrait for {character.id} - Active: {go.activeSelf}");
+            //Debug.Log($"[HUD] Instantiated portrait for {character.id} - Active: {go.activeSelf}");
             var portrait = go.GetComponent<CharacterPortraitUI>();
 
             //  Dynamically extract from prefab's child script
@@ -139,7 +139,7 @@ private void Awake()
                 continue;
             }
 
-            Debug.Log($"[HUD] Setting portrait for {character.id} with sprite: {portraitData.portraitSprite.name}");
+            //Debug.Log($"[HUD] Setting portrait for {character.id} with sprite: {portraitData.portraitSprite.name}");
 
 
             //bool isActive = CharacterManager.Instance.activeCharacter != null &&
@@ -221,7 +221,7 @@ private void Awake()
 
     public void InitHUD()
     {
-        Debug.Log("[HUD] Initializing CharacterHUDManager");
+        //Debug.Log("[HUD] Initializing CharacterHUDManager");
         if (portraitPrefab == null)
         {
             Debug.LogError("[HUD] portraitPrefab is not assigned in InitHUD.");
@@ -233,7 +233,7 @@ private void Awake()
 
     private void HandleCharacterSwitched(GameObject newCharacter)
     {
-        Debug.Log("[HUD] Handling character switch event.");
+        //Debug.Log("[HUD] Handling character switch event.");
         UpdateHUD(newCharacter);
     }
 }

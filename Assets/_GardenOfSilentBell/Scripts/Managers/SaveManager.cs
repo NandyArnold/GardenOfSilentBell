@@ -5,10 +5,29 @@ using static CharacterManager;
 using System.Linq;
 
 [System.Serializable]
+public class SceneObjectState
+{
+    public string objectId;
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 scale;
+    public bool isActive;
+    public bool isDestroyed;
+}
+
+[System.Serializable]
+public class SceneSaveData
+{
+    public string sceneName;
+    public List<SceneObjectState> objects = new List<SceneObjectState>();
+}
+
+[System.Serializable]
 public class GameSaveData
 {
     public string currentScene;
     public List<CharacterSaveData> characterStates;
+    public List<SceneSaveData> sceneStates = new List<SceneSaveData>();
 }
 
 [System.Serializable]
@@ -84,11 +103,11 @@ public class SaveManager : MonoBehaviour
             var companionFollow = character.instance != null ? character.instance.GetComponent<CompanionFollow>() : null;
             if (companionFollow != null)
             {
-                Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' found. hasMetUp={companionFollow.hasMetUp}");
+                //Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' found. hasMetUp={companionFollow.hasMetUp}");
             }
             else
             {
-                Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' is NULL.");
+                //Debug.Log($"[SaveManager] CompanionFollow for '{character.id}' is NULL.");
             }
             existing.hasMetUp = companionFollow != null ? companionFollow.hasMetUp : character.hasMetUp;
 
@@ -96,9 +115,26 @@ public class SaveManager : MonoBehaviour
             // Do NOT overwrite reachedExit or returnSpawnPoints here!
         }
 
+        var sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        var objects = Object.FindObjectsByType<PuzzleObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        var sceneData = new SceneSaveData { sceneName = sceneName };
+
+        foreach (var obj in objects)
+        {
+             Debug.Log($"[SaveManager] Found PuzzleObject: {obj.name}, ID: {obj.objectId}, Active: {obj.gameObject.activeSelf}, Pos: {obj.transform.position}");
+            sceneData.objects.Add(obj.CaptureState());
+        }
+
+        // Replace existing scene save or add new
+        var existingSceneData = saveData.sceneStates.Find(s => s.sceneName == sceneName);
+        if (existingSceneData != null)
+            saveData.sceneStates.Remove(existingSceneData);
+
+        saveData.sceneStates.Add(sceneData);
+
         File.WriteAllText(savePath, JsonUtility.ToJson(saveData));
        
-        Debug.Log("[SaveManager]Game saved. Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
+        //Debug.Log("[SaveManager]Game saved. Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
     }
 
 
@@ -117,6 +153,19 @@ public class SaveManager : MonoBehaviour
             saveData.characterStates = new List<CharacterSaveData>();
         Debug.Log("[SaveManager] Loading character state: " + savePath);
         CharacterManager.Instance.LoadCharacterStates(saveData.characterStates);
+
+        var sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        var sceneData = saveData.sceneStates.Find(s => s.sceneName == sceneName);
+        if (sceneData != null)
+        {
+            var allPuzzleObjects = Object.FindObjectsByType<PuzzleObject>(FindObjectsSortMode.None);
+            foreach (var state in sceneData.objects)
+            {
+                var match = allPuzzleObjects.FirstOrDefault(o => o.objectId == state.objectId);
+                if (match != null)
+                    match.ApplyState(state);
+            }
+        }
         // Load the scene by name if needed
         Debug.Log("Game loaded.");
     }

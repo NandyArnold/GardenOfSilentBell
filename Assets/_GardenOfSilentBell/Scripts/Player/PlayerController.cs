@@ -39,17 +39,17 @@ public class PlayerController : MonoBehaviour
                     telekinesisSkill = skillManager.GetSkillOfType<TelekinesisSkill>();
                     if (telekinesisSkill != null)
                     {
-                        Debug.Log("[PlayerController] Got TelekinesisSkill from SkillManager.");
+                        //Debug.Log("[PlayerController] Got TelekinesisSkill from SkillManager.");
                     }
                     else
                     {
-                        Debug.LogWarning("[PlayerController] TelekinesisSkill was not found in SkillManager.");
+                        //Debug.LogWarning("[PlayerController] TelekinesisSkill was not found in SkillManager.");
                     }
                     break;
                 }
                 else
                 {
-                    Debug.Log($"[PlayerController] Skill {so.name} is not TelekinesisSO, skipping.");
+                    //Debug.Log($"[PlayerController] Skill {so.name} is not TelekinesisSO, skipping.");
                 }
             }
         }

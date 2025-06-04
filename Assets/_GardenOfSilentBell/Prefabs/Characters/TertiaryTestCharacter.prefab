@@ -271,6 +271,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 64
   normalPushSpeed: 3
   heavyPushSpeed: 1
   sprintSpeed: 8

@@ -14,7 +14,7 @@ public class CharacterPortraitUI : MonoBehaviour
     {
         if (portraitImage == null || selectButton == null)
         {
-            Debug.LogError("[CharacterPortraitUI] Missing references in inspector!");
+            //Debug.LogError("[CharacterPortraitUI] Missing references in inspector!");
             return;
         }
         characterId = id;
@@ -24,7 +24,7 @@ public class CharacterPortraitUI : MonoBehaviour
         characterNameText.text = id; // Assuming characterId is the name, adjust as needed
 
         activeCharacterPanel.SetActive(isActive);
-        Debug.Log($"[CharacterPortraitUI] Setting activeCharacterPanel to {isActive} for character {id}");
+        //Debug.Log($"[CharacterPortraitUI] Setting activeCharacterPanel to {isActive} for character {id}");
     }
 }
 

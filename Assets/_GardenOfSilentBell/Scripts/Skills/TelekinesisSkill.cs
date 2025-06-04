@@ -15,13 +15,13 @@ public class TelekinesisSkill : ISkill
         this.inputHandler = character.GetComponent<PlayerInputHandler>();
         this.handler = character.GetComponent<TelekinesisHandler>();
 
-        Debug.Log($"[TelekinesisSkill] Constructor called for character: {character.name}");
-        Debug.Log("[TelekinesisSkill] Handler is " + (handler == null ? "NULL" : "FOUND"));
+        //Debug.Log($"[TelekinesisSkill] Constructor called for character: {character.name}");
+        //Debug.Log("[TelekinesisSkill] Handler is " + (handler == null ? "NULL" : "FOUND"));
 
         if (handler != null)
         {
             handler.Initialize(skillData);
-            Debug.Log($"[TelekinesisSkill] TelekinesisHandler initialized for {character.name}");
+            //Debug.Log($"[TelekinesisSkill] TelekinesisHandler initialized for {character.name}");
         }
         else
         {

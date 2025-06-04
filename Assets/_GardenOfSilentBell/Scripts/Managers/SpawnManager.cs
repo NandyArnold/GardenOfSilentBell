@@ -79,7 +79,7 @@ public void RefreshSpawnPoints()
             }
             else
             {
-                Debug.LogWarning($"[SpawnManager] No spawn transform found for characterId: {sp.characterId}");
+                //Debug.LogWarning($"[SpawnManager] No spawn transform found for characterId: {sp.characterId}");
             }
         });
 
@@ -99,13 +99,13 @@ public void RefreshSpawnPoints()
         var point = spawnPoints.Find(p => p.characterId == id);
         if (point == null)
         {
-            Debug.LogWarning($"[SpawnManager] No SpawnPoint entry found for characterId: '{id}'.");
+            //Debug.LogWarning($"[SpawnManager] No SpawnPoint entry found for characterId: '{id}'.");
             return null;
         }
 
         if (point.spawnTransform == null)
         {
-            Debug.LogWarning($"[SpawnManager] SpawnPoint for characterId: '{id}' has null spawnTransform.");
+            //Debug.LogWarning($"[SpawnManager] SpawnPoint for characterId: '{id}' has null spawnTransform.");
             return null;
         }
 
@@ -145,7 +145,7 @@ public void RefreshSpawnPoints()
             }
             else
             {
-                Debug.LogWarning($"[SpawnManager] No spawn point found for character '{character.id}' in this scene.");
+                //Debug.LogWarning($"[SpawnManager] No spawn point found for character '{character.id}' in this scene.");
             }
         }
     }

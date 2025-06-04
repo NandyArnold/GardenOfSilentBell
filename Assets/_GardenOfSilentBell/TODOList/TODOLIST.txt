@@ -1,10 +1,5 @@
-Check the following items:
-
-- TriggerBox
-- Test and implement the new trigger box for the unlock switch to switch only once triggered
-- Follow player
-- 
+attach PuzzleObject and UniqueObjectIDAssigner to puzzle objects
+mqybe try to see the required component hack to auto add it
 
 
-
-Bootstrap ->MainMenu->UI scene->(all those before load additive)Intro or level 1 order of loading scenes
+used a puzzleobjecteditor to auto add

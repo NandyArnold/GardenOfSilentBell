@@ -10,10 +10,11 @@ public class GameBootstrapper : MonoBehaviour
 
     private string previousScene;
 
+    private bool isBootstrapping = true;
 
     private void Awake()
     {
-        Debug.Log("[GameBootstrapper] Bootstrapping game...");
+        //Debug.Log("[GameBootstrapper] Bootstrapping game...");
 
         // Prevent duplicate persistent objects (optional, defensive)
         if (Object.FindObjectsByType<GameBootstrapper>(FindObjectsSortMode.None).Length > 1)
@@ -37,7 +38,7 @@ public class GameBootstrapper : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("[GameBootstrapper] Start called");
+        //Debug.Log("[GameBootstrapper] Start called");
 
         // Load saved game if it exists
         if (SaveManager.Instance.HasSave())
@@ -70,8 +71,9 @@ public class GameBootstrapper : MonoBehaviour
             }
             else
             {
-                Debug.Log("[GameBootstrapper] No save found, loading fallback scene...");
-                StartCoroutine(LoadFallbackSceneAndSpawn());
+                //Debug.Log("[GameBootstrapper] No save found, loading fallback scene...");
+                //StartCoroutine(LoadFallbackSceneAndSpawn());
+                StartCoroutine(PerformInitialSceneChain());
             }
         }
 
@@ -94,6 +96,12 @@ public class GameBootstrapper : MonoBehaviour
 
     private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
     {
+        if (isBootstrapping)
+        {
+            //Debug.Log("[GameBootstrapper] Skipping OnActiveSceneChanged logic during bootstrapping.");
+            return;
+        }
+
         if (newScene.buildIndex == 0)
             return;
 
@@ -101,7 +109,7 @@ public class GameBootstrapper : MonoBehaviour
             return;
 
         InitializeCharactersInScene();
-        Debug.Log($"[GameBootstrapper] Initialized Characters, setting active'{oldScene.name}' to '{newScene.name}'");
+        //Debug.Log($"[GameBootstrapper] Initialized Characters, setting active'{oldScene.name}' to '{newScene.name}'");
         //  CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
         if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
         {
@@ -128,7 +136,7 @@ public class GameBootstrapper : MonoBehaviour
             if (saveData != null)
             {
                 bool hasReturnPoint = saveData.returnSpawnPoints.Any(rsp => rsp.sceneName == currentScene);
-                Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit: {saveData.reachedExit}, hasReturnPoint for '{currentScene}': {hasReturnPoint}");
+                //Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit: {saveData.reachedExit}, hasReturnPoint for '{currentScene}': {hasReturnPoint}");
             }
             else
             {
@@ -138,7 +146,7 @@ public class GameBootstrapper : MonoBehaviour
 
         if (CharacterHUDManager.Instance != null)
         {
-            Debug.Log("[GameBootstrapper] Triggering CharacterHUDManager InitHUD after full initialization.");
+            //Debug.Log("[GameBootstrapper] Triggering CharacterHUDManager InitHUD after full initialization.");
             CharacterHUDManager.Instance.InitHUD(); 
         }
 
@@ -147,7 +155,7 @@ public class GameBootstrapper : MonoBehaviour
     private void InitializeCharactersInScene()
     {
         //CharacterManager.Instance?.InitializeUnlockedCharacters();  //TESTING PURPOSES ONLY
-        Debug.Log("[GameBootstrapper] InitializeCharactersInScene called");
+        //Debug.Log("[GameBootstrapper] InitializeCharactersInScene called");
 
         if (SpawnManager.Instance == null)
         {
@@ -155,7 +163,7 @@ public class GameBootstrapper : MonoBehaviour
         }
         else
         {
-            Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
+            //Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
             SpawnManager.Instance.RefreshSpawnPoints();
             SpawnManager.Instance.SpawnAllSceneCharacters();
             //FollowManager.Instance.AssignFollowTargets();
@@ -164,7 +172,7 @@ public class GameBootstrapper : MonoBehaviour
 
         //Checks how many characters are unlocked
         var unlocked = CharacterManager.Instance.Characters.Where(c => c.isUnlocked).ToList();
-        Debug.Log($"[GameBootstrapper] Unlocked characters count: {unlocked.Count}");
+        //Debug.Log($"[GameBootstrapper] Unlocked characters count: {unlocked.Count}");
 
 
         foreach (var charData in unlocked)
@@ -255,7 +263,7 @@ public class GameBootstrapper : MonoBehaviour
             spawnPos = Vector2.zero;
         }
 
-        Debug.Log($"[GameBootstrapper] Spawning '{characterId}' using {spawnType} at {spawnPos}");
+        //Debug.Log($"[GameBootstrapper] Spawning '{characterId}' using {spawnType} at {spawnPos}");
 
         var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(characterId, spawnPos);
 
@@ -278,6 +286,24 @@ public class GameBootstrapper : MonoBehaviour
 
         yield return null;
     }
+
+
+    private IEnumerator PerformInitialSceneChain()
+    {
+        isBootstrapping = true;
+
+        // Step 1: Load UI_Scene
+        SceneManager.LoadScene("UI_Scene");
+        yield return null;
+
+        // Step 2: Load IntroScene
+        SceneManager.LoadScene("IntroScene");
+        yield return null;
+
+        // Now let user interact with IntroScene normally
+        isBootstrapping = false;
+    }
+
 
 
 }

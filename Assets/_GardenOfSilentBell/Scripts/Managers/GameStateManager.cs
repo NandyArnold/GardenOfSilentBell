@@ -13,7 +13,7 @@ public class GameStateManager : MonoBehaviour
             return;
         }
         Instance = this;
-        Debug.Log("[GameStateManager] Awake called");
+        //Debug.Log("[GameStateManager] Awake called");
         
     }
 
