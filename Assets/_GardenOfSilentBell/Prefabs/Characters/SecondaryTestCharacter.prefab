@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: -6637643445750856400}
   - component: {fileID: 5575602907396653927}
   - component: {fileID: 2687915032742670574}
+  - component: {fileID: 3049532436632870240}
   m_Layer: 0
   m_Name: SecondaryTestCharacter
   m_TagString: Player
@@ -519,3 +520,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineStartPoint: {fileID: 3612996374983098980}
+--- !u!95 &3049532436632870240
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677356156325521091}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e9f441cce33e39b4e84c81dda5892128, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: -7878448075478386285}
   - component: {fileID: -3249671027189850036}
   - component: {fileID: -424447158627010873}
+  - component: {fileID: 4318889484061218120}
   m_Layer: 0
   m_Name: TertiaryTestCharacter
   m_TagString: Player
@@ -452,6 +453,28 @@ MonoBehaviour:
   assignedSkills:
   - {fileID: 11400000, guid: 62812193efd26664491d836dbae10a0e, type: 2}
   - {fileID: 11400000, guid: 70164995a391e5a4799d3c1f01d3549d, type: 2}
+--- !u!95 &4318889484061218120
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677110069252118318}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 42da90b09aef33d4fae8cc7e93aacb1d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4609026433687383205
 GameObject:
   m_ObjectHideFlags: 0
