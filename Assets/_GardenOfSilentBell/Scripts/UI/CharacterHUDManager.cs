@@ -87,6 +87,11 @@ private void Awake()
 
     public void UpdateCharacterBar()
     {
+        if (GameBootstrapper.IsBootstrapping)
+        {
+            Debug.Log("[CharacterHUDManager] Skipping UpdateCharacterBar during bootstrap.");
+            return;
+        }
         var cm = CharacterManager.Instance;
         if (cm == null || cm.Characters == null || cm.Characters.Count == 0)
         {
@@ -201,6 +206,8 @@ private void Awake()
 
     IEnumerator DelayedUpdateCharacterBar()
     {
+        while (GameBootstrapper.IsBootstrapping)
+            yield return null;
         if (portraitPrefab == null)
         {
             Debug.LogError("[HUD] portraitPrefab is null in coroutine. It was likely destroyed or unassigned.");

@@ -5,6 +5,7 @@ public class StartGameButton : MonoBehaviour
 {
     public GameObject canvasToDisable; // Assign the button itself or its parent
 
+
     public void OnStartGamePressed()
     {
         //Debug.Log("[StartGameButton] Play pressed, loading Level_1...");
@@ -14,6 +15,7 @@ public class StartGameButton : MonoBehaviour
         }
 
         SceneManager.LoadScene("Level_1");
+        GameBootstrapper.IntroSceneFinished = true;
     }
 }
 
