@@ -9,6 +9,6 @@ public class BigJumpSkillSO : SkillSO
     }
     public override string Description()
     {
-        return "Allows the user to performe a big jump to overcome high gaps";
+        return "Allows the user to performe a big jump to overcome large gaps";
     }
 }

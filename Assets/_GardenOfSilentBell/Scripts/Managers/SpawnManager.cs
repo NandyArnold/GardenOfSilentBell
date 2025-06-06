@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.TextCore.Text;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class SpawnManager : MonoBehaviour
 
     public GameObject SpawnCharacterOnSceneLoad(string id, Vector2 position)
     {
+        Debug.Log($"[SPAWN DEBUG] SpawnCharacterOnSceneLoad called for {id} at {position}");
+
         var characterData = CharacterManager.Instance.GetCharacterById(id);
         if (characterData == null || characterData.characterPrefab == null)
         {
@@ -58,6 +61,7 @@ public class SpawnManager : MonoBehaviour
         // Always use the provided position, ignore per-character spawn points
         GameObject instance = Instantiate(characterData.characterPrefab, position, Quaternion.identity);
         instance.name = id;
+        Debug.Log($"[SPAWN DEBUG] SpawnCharacterOnSceneLoad returning: {(instance ? instance.name : "NULL")}");
         return instance;
     }
 
@@ -131,6 +135,7 @@ public void RefreshSpawnPoints()
 
     public void SpawnAllSceneCharacters()
     {
+        Debug.Log("[SPAWN DEBUG] SpawnAllSceneCharacters called - THIS SHOULD NOT HAPPEN!");
         foreach (var character in CharacterManager.Instance.Characters)
         {
             if (character.isUnlocked || character.id == "StartingCharacter")
