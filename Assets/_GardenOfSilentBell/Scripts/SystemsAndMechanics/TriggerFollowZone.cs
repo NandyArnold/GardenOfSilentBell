@@ -32,6 +32,6 @@ public class TriggerFollowZone : MonoBehaviour
 
         FollowManager.Instance?.AssignFollowTargets();
 
-        gameObject.SetActive(false); // Disable this trigger zone after use
+        Destroy(gameObject);
     }
 }

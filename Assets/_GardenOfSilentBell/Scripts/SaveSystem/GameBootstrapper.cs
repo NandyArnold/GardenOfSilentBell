@@ -10,9 +10,8 @@ public class GameBootstrapper : MonoBehaviour
 
     private string previousScene;
 
-    public static bool IsBootstrapping { get; private set; } = true;
+    private bool isBootstrapping = true;
 
-    public static bool IntroSceneFinished = false;
     private void Awake()
     {
         //Debug.Log("[GameBootstrapper] Bootstrapping game...");
@@ -97,7 +96,7 @@ public class GameBootstrapper : MonoBehaviour
 
     private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
     {
-        if (GameBootstrapper.IsBootstrapping)
+        if (isBootstrapping)
         {
             //Debug.Log("[GameBootstrapper] Skipping OnActiveSceneChanged logic during bootstrapping.");
             return;
@@ -109,11 +108,7 @@ public class GameBootstrapper : MonoBehaviour
         if (SaveManager.Instance == null)
             return;
 
-        // Wait a frame to ensure all objects are initialized
-
-        //StartCoroutine(LoadGameDelayed());
         InitializeCharactersInScene();
-
         //Debug.Log($"[GameBootstrapper] Initialized Characters, setting active'{oldScene.name}' to '{newScene.name}'");
         //  CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
         if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
@@ -295,7 +290,7 @@ public class GameBootstrapper : MonoBehaviour
 
     private IEnumerator PerformInitialSceneChain()
     {
-        GameBootstrapper.IsBootstrapping = true;
+        isBootstrapping = true;
 
         // Step 1: Load UI_Scene
         SceneManager.LoadScene("UI_Scene");
@@ -306,22 +301,10 @@ public class GameBootstrapper : MonoBehaviour
         yield return null;
 
         // Now let user interact with IntroScene normally
-
-        yield return new WaitUntil(() => GameBootstrapper.IntroSceneFinished);
-
-        // Step 4: Done bootstrapping
-        GameBootstrapper.IsBootstrapping = false;
-
-        // Step 5: Load Level_1
-        SceneManager.LoadScene("Level_1");
-
+        isBootstrapping = false;
     }
 
-    IEnumerator LoadGameDelayed()
-    {
-        yield return null; // Wait one frame
-        SaveManager.Instance.LoadGame();
-    }
+
 
 }
 

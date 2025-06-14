@@ -8,12 +8,12 @@ public class PuzzleObject : MonoBehaviour
     {
         return new SceneObjectState
         {
-            objectId = this.objectId,
+            objectId = objectId,
             position = transform.position,
             rotation = transform.rotation,
             scale = transform.localScale,
             isActive = gameObject.activeSelf,
-            isDestroyed = false // or whatever logic you need
+            isDestroyed = this == null // or handled externally
         };
     }
 
@@ -23,9 +23,5 @@ public class PuzzleObject : MonoBehaviour
         transform.rotation = state.rotation;
         transform.localScale = state.scale;
         gameObject.SetActive(state.isActive);
-
-        // Apply any other state-specific logic here
-        // For example, if this is a switch, set its switched state
-        // If it's a movable object, ensure it's in the right position
     }
 }

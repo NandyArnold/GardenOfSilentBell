@@ -15,7 +15,6 @@ public class SceneObjectState
     public bool isDestroyed;
 }
 
-
 [System.Serializable]
 public class SceneSaveData
 {
@@ -57,9 +56,6 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance;
     private string savePath => Path.Combine(Application.persistentDataPath, "save.json");
-
-
-
 
     private void Awake()
     {
@@ -137,9 +133,7 @@ public class SaveManager : MonoBehaviour
         saveData.sceneStates.Add(sceneData);
 
         File.WriteAllText(savePath, JsonUtility.ToJson(saveData));
-        string debugJson = JsonUtility.ToJson(saveData, true); // `puzzleSaveContainer` is your list or wrapper object
-        Debug.Log("[SaveManager] Serialized Puzzle Data:\n" + debugJson);
-
+       
         //Debug.Log("[SaveManager]Game saved. Save data after SaveGame:\n" + JsonUtility.ToJson(saveData, true));
     }
 
@@ -170,7 +164,6 @@ public class SaveManager : MonoBehaviour
                 var match = allPuzzleObjects.FirstOrDefault(o => o.objectId == state.objectId);
                 if (match != null)
                     match.ApplyState(state);
-
             }
         }
         // Load the scene by name if needed
