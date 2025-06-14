@@ -111,9 +111,15 @@ public class GameBootstrapper : MonoBehaviour
 
         // Wait a frame to ensure all objects are initialized
 
+        //StartCoroutine(LoadGameDelayed());
+        InitializeCharactersInScene();
 
         //Debug.Log($"[GameBootstrapper] Initialized Characters, setting active'{oldScene.name}' to '{newScene.name}'");
         //  CharacterManager.Instance?.SetActiveCharacter(0); // Reset active character to first one
+        if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
+        {
+            CharacterManager.Instance.SetActiveCharacter(0);
+        }
 
         int oldIndex = oldScene.buildIndex;
         int newIndex = newScene.buildIndex;
@@ -123,12 +129,6 @@ public class GameBootstrapper : MonoBehaviour
         {
             SaveManager.Instance.ResetReachedExitForSceneForAllCharacters(oldScene.name);
         }
-        InitializeCharactersInScene();
-        if (!CharacterManager.Instance.Characters.Any(c => c.isActive))
-        {
-            CharacterManager.Instance.SetActiveCharacter(0);
-        }
-        LoadGameState();
 
         previousScene = newScene.name;
         SaveManager.Instance.SaveGame();
@@ -168,9 +168,9 @@ public class GameBootstrapper : MonoBehaviour
         }
         else
         {
-            Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
+            //Debug.Log("[GameBootstrapper]-InitializeCHaracterInScene() Refreshing spawn points ");
             SpawnManager.Instance.RefreshSpawnPoints();
-            //SpawnManager.Instance.SpawnAllSceneCharacters();
+            SpawnManager.Instance.SpawnAllSceneCharacters();
             //FollowManager.Instance.AssignFollowTargets();
         }
        
@@ -239,19 +239,6 @@ public class GameBootstrapper : MonoBehaviour
 
     private IEnumerator ChooseAndSpawnCharacterCoroutine(string characterId)
     {
-        Debug.Log($"[SPAWN DEBUG] ChooseAndSpawnCharacterCoroutine called for {characterId}");
-
-        var existingCharacters = FindObjectsByType<GameObject>(FindObjectsSortMode.None)
-        .Where(go => go.name.Contains(characterId) || go.name.Contains("StartingCharacter"))
-        .ToArray();
-
-        Debug.Log($"[SPAWN DEBUG] Found {existingCharacters.Length} existing characters before spawn:");
-        foreach (var existing in existingCharacters)
-        {
-            Debug.Log($"[SPAWN DEBUG] Existing: {existing.name} at {existing.transform.position}");
-        }
-
-
         var saveData = SaveManager.Instance.GetCharacterSaveDataById(characterId);
         Vector2? returnPoint = null;
         bool reachedExit = saveData != null && saveData.reachedExit;
@@ -281,12 +268,9 @@ public class GameBootstrapper : MonoBehaviour
             spawnPos = Vector2.zero;
         }
 
-        Debug.Log($"[SPAWN DEBUG] About to spawn '{characterId}' using {spawnType} at {spawnPos}");
+        //Debug.Log($"[GameBootstrapper] Spawning '{characterId}' using {spawnType} at {spawnPos}");
 
         var instance = SpawnManager.Instance.SpawnCharacterOnSceneLoad(characterId, spawnPos);
-
-        Debug.Log($"[SPAWN DEBUG] Spawned '{characterId}' - Instance: {(instance ? instance.name : "NULL")}");
-
 
         var cmChar = CharacterManager.Instance.GetCharacterById(characterId);
         if (cmChar != null)
@@ -333,33 +317,10 @@ public class GameBootstrapper : MonoBehaviour
 
     }
 
-    private void LoadGameState()
+    IEnumerator LoadGameDelayed()
     {
-        
-
-        // Load the saved puzzle object states
+        yield return null; // Wait one frame
         SaveManager.Instance.LoadGame();
-
-        // Now save the current state
-        SaveManager.Instance.SaveGame();
-
-        // Do your character exit checking
-        var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        foreach (var charData in CharacterManager.Instance.Characters.Where(c => c.isUnlocked))
-        {
-            var saveData = SaveManager.Instance.GetCharacterSaveDataById(charData.id);
-            if (saveData != null)
-            {
-                bool hasReturnPoint = saveData.returnSpawnPoints.Any(rsp => rsp.sceneName == currentScene);
-                //Debug.Log($"[SaveManager] Character '{charData.id}' reachedExit: {saveData.reachedExit}, hasReturnPoint for '{currentScene}': {hasReturnPoint}");
-            }
-        }
-
-        // Initialize HUD last
-        if (CharacterHUDManager.Instance != null)
-        {
-            CharacterHUDManager.Instance.InitHUD();
-        }
     }
 
 }
